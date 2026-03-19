@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
+
+model Technology {
+  id           Int                   @id @default(autoincrement())
+  name         String                @db.VarChar(100)
+  slug         String                @unique @db.VarChar(100)
+  category     TechnologyCategory?
+  sortOrder    Int                   @default(0) @map("sort_order")
+  createdAt    DateTime              @default(now()) @map("created_at")
+  projects     ProjectTechnology[]
+
+  @@map("technologies")
+}
+
+model Project {
+  id           Int                   @id @default(autoincrement())
+  slug         String                @unique @db.VarChar(120)
+  name         String                @db.VarChar(200)
+  problem      String?               @db.Text
+  solution     String?               @db.Text
+  results      String?               @db.Text
+  imageUrl     String?               @map("image_url") @db.VarChar(500)
+  sortOrder    Int                   @default(0) @map("sort_order")
+  isPublished  Boolean               @default(true) @map("is_published")
+  createdAt    DateTime              @default(now()) @map("created_at")
+  updatedAt    DateTime              @updatedAt @map("updated_at")
+  technologies ProjectTechnology[]
+
+  @@map("projects")
+}
+
+model ProjectTechnology {
+  projectId    Int        @map("project_id")
+  technologyId Int        @map("technology_id")
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, technologyId])
+  @@index([technologyId, projectId])
+  @@map("project_technologies")
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(150)
+  email     String   @db.VarChar(255)
+  subject   String?  @db.VarChar(255)
+  message   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("contact_messages")
+}
+
+enum TechnologyCategory {
+  development
+  systems
+  methodologies
+}
