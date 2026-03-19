@@ -1,53 +1,28 @@
 import type { Metadata } from "next";
+import { prisma } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Compétences",
   description: "Développement, systèmes et méthodologies.",
 };
 
-const categories = [
-  {
-    name: "Développement",
-    icon: "⌨️",
-    description: "Technologies web et applicatives",
-    items: [
-      "Next.js / React",
-      "TypeScript",
-      "Node.js",
-      "Tailwind CSS",
-      "REST API",
-      "MySQL / Prisma",
-      "Git",
-    ],
-  },
-  {
-    name: "Systèmes",
-    icon: "🔧",
-    description: "Intégration et infrastructure",
-    items: [
-      "ERP (intégration)",
-      "DGMS / Gestion de flotte",
-      "Linux",
-      "Docker",
-      "Réseaux TCP/IP",
-      "XAMPP / Apache",
-    ],
-  },
-  {
-    name: "Méthodologies",
-    icon: "📐",
-    description: "Organisation et gestion de projet",
-    items: [
-      "Agile / Scrum",
-      "Analyse des besoins",
-      "Documentation technique",
-      "Tests & recette",
-      "CI/CD",
-    ],
-  },
-];
+export const revalidate = 60;
 
-export default function SkillsPage() {
+async function getData() {
+  try {
+    const categories = await prisma.skillCategory.findMany({
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      include: { items: { orderBy: [{ sortOrder: "asc" }, { id: "asc" }] } },
+    });
+    return categories;
+  } catch {
+    return [];
+  }
+}
+
+export default async function SkillsPage() {
+  const categories = await getData();
+
   return (
     <div className="section-padding">
       <div className="container-tight">
@@ -61,28 +36,42 @@ export default function SkillsPage() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((cat) => (
-            <div key={cat.name}
-              className="rounded-xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-1">
-                <span className="text-2xl" role="img" aria-label={cat.name}>{cat.icon}</span>
-                <h2 className="font-display text-lg font-semibold text-[hsl(var(--color-foreground))]">
-                  {cat.name}
-                </h2>
+        {categories.length > 0 ? (
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {categories.map((cat) => (
+              <div key={cat.id}
+                className="rounded-xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-1">
+                  {cat.icon && (
+                    <span className="text-2xl" role="img" aria-label={cat.name}>{cat.icon}</span>
+                  )}
+                  <h2 className="font-display text-lg font-semibold text-[hsl(var(--color-foreground))]">
+                    {cat.name}
+                  </h2>
+                </div>
+                {cat.description && (
+                  <p className="text-xs text-[hsl(var(--color-muted))] mb-4">{cat.description}</p>
+                )}
+                <ul className="flex flex-wrap gap-2 mt-3">
+                  {cat.items.map((item) => (
+                    <li key={item.id}
+                      className="rounded-md bg-[hsl(var(--color-surface-muted))] px-3 py-1 text-sm text-[hsl(var(--color-muted))]">
+                      {item.name}
+                    </li>
+                  ))}
+                  {cat.items.length === 0 && (
+                    <li className="text-xs text-[hsl(var(--color-muted))] italic">Aucun élément.</li>
+                  )}
+                </ul>
               </div>
-              <p className="text-xs text-[hsl(var(--color-muted))] mb-4">{cat.description}</p>
-              <ul className="flex flex-wrap gap-2">
-                {cat.items.map((item) => (
-                  <li key={item}
-                    className="rounded-md bg-[hsl(var(--color-surface-muted))] px-3 py-1 text-sm text-[hsl(var(--color-muted))]">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-12 text-[hsl(var(--color-muted))]">
+            Compétences à définir dans le{" "}
+            <a href="/admin/skills" className="text-[hsl(var(--color-accent))] hover:underline">backoffice</a>.
+          </p>
+        )}
       </div>
     </div>
   );

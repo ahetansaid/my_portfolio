@@ -68,6 +68,54 @@ model ContactMessage {
   @@map("contact_messages")
 }
 
+model TimelineItem {
+  id          Int      @id @default(autoincrement())
+  year        String   @db.VarChar(20)
+  title       String   @db.VarChar(200)
+  description String   @db.Text
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("timeline_items")
+}
+
+model AboutValue {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(200)
+  description String   @db.Text
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("about_values")
+}
+
+model SkillCategory {
+  id          Int         @id @default(autoincrement())
+  name        String      @db.VarChar(100)
+  icon        String?     @db.VarChar(10)
+  description String?     @db.VarChar(255)
+  sortOrder   Int         @default(0) @map("sort_order")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  items       SkillItem[]
+
+  @@map("skill_categories")
+}
+
+model SkillItem {
+  id         Int           @id @default(autoincrement())
+  name       String        @db.VarChar(100)
+  sortOrder  Int           @default(0) @map("sort_order")
+  categoryId Int           @map("category_id")
+  category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @default(now()) @map("created_at")
+
+  @@index([categoryId])
+  @@map("skill_items")
+}
+
 enum TechnologyCategory {
   development
   systems

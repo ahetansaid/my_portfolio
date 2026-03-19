@@ -16,29 +16,33 @@ export default function AdminLayout({
           >
             Backoffice
           </Link>
-          <nav className="flex items-center gap-6">
-            <Link
-              href="/admin"
-              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]"
-            >
-              Tableau de bord
+          <nav className="flex items-center gap-5">
+            <Link href="/admin"
+              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]">
+              Dashboard
             </Link>
-            <Link
-              href="/admin/projects"
-              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]"
-            >
+            <Link href="/admin/projects"
+              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]">
               Projets
             </Link>
-            <Link
-              href="/admin/technologies"
-              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]"
-            >
+            <Link href="/admin/technologies"
+              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]">
               Technologies
             </Link>
-            <Link
-              href="/"
-              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]"
-            >
+            <Link href="/admin/about"
+              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]">
+              À propos
+            </Link>
+            <Link href="/admin/skills"
+              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]">
+              Compétences
+            </Link>
+            <Link href="/admin/messages"
+              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]">
+              Messages
+            </Link>
+            <Link href="/"
+              className="text-sm font-medium text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))]">
               Voir le site
             </Link>
             <LogoutButton />
