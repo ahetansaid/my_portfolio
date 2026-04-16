@@ -10,6 +10,10 @@ Site portfolio professionnel avec backoffice, base MySQL et design moderne.
 | [docs/schema-mysql.md](./docs/schema-mysql.md) | Schéma de la base de données MySQL |
 | [docs/design-guide.md](./docs/design-guide.md) | Guide design — pages modernes et professionnelles |
 
+Va sur /admin/login → connecte-toi avec :
+Email : admin@portfolio.local
+Password : admin123
+
 ## Choix techniques
 
 - **Base de données :** MySQL
