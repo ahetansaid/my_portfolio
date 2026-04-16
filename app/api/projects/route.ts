@@ -11,6 +11,7 @@ export async function GET() {
         include: { technology: true },
         orderBy: { technology: { sortOrder: "asc" } },
       },
+      socialLinks: { orderBy: { sortOrder: "asc" } },
     },
   });
 
@@ -18,11 +19,19 @@ export async function GET() {
     id: p.id,
     slug: p.slug,
     name: p.name,
+    tagline: p.tagline ?? "",
     problem: p.problem ?? "",
     solution: p.solution ?? "",
     results: p.results ?? "",
+    caseStudyMd: p.caseStudyMd ?? "",
     imageUrl: p.imageUrl,
+    architectureUrl: p.architectureUrl,
+    demoUrl: p.demoUrl,
+    prodUrl: p.prodUrl,
+    repoUrl: p.repoUrl,
+    impactMetrics: p.impactMetrics,
     sortOrder: p.sortOrder,
+    isFeatured: p.isFeatured,
     isPublished: p.isPublished,
     technologies: p.technologies.map((pt) => ({
       id: pt.technology.id,
@@ -30,6 +39,7 @@ export async function GET() {
       slug: pt.technology.slug,
       category: pt.technology.category,
     })),
+    socialLinks: p.socialLinks,
   }));
 
   return NextResponse.json(data);
@@ -40,7 +50,25 @@ export async function POST(request: NextRequest) {
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
   const body = await request.json();
-  const { name, slug, problem, solution, results, imageUrl, sortOrder, isPublished, technologyIds } = body;
+  const {
+    name,
+    slug,
+    tagline,
+    problem,
+    solution,
+    results,
+    caseStudyMd,
+    imageUrl,
+    architectureUrl,
+    demoUrl,
+    prodUrl,
+    repoUrl,
+    impactMetrics,
+    sortOrder,
+    isFeatured,
+    isPublished,
+    technologyIds,
+  } = body;
 
   if (!name || !slug) {
     return NextResponse.json({ error: "Nom et slug requis." }, { status: 400 });
@@ -50,11 +78,19 @@ export async function POST(request: NextRequest) {
     data: {
       name,
       slug,
+      tagline: tagline ?? null,
       problem: problem ?? null,
       solution: solution ?? null,
       results: results ?? null,
+      caseStudyMd: caseStudyMd ?? null,
       imageUrl: imageUrl ?? null,
+      architectureUrl: architectureUrl ?? null,
+      demoUrl: demoUrl ?? null,
+      prodUrl: prodUrl ?? null,
+      repoUrl: repoUrl ?? null,
+      impactMetrics: impactMetrics ?? undefined,
       sortOrder: sortOrder ?? 0,
+      isFeatured: isFeatured ?? false,
       isPublished: isPublished ?? true,
       technologies: {
         create: (technologyIds ?? []).map((id: number) => ({ technologyId: id })),

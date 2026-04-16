@@ -8,7 +8,10 @@ export async function GET(_: NextRequest, { params }: Params) {
   const { id } = await params;
   const project = await prisma.project.findUnique({
     where: { id: Number(id) },
-    include: { technologies: { include: { technology: true } } },
+    include: {
+      technologies: { include: { technology: true } },
+      socialLinks: { orderBy: { sortOrder: "asc" } },
+    },
   });
   if (!project) return NextResponse.json({ error: "Introuvable." }, { status: 404 });
   return NextResponse.json(project);
@@ -20,7 +23,25 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
   const { id } = await params;
   const body = await request.json();
-  const { name, slug, problem, solution, results, imageUrl, sortOrder, isPublished, technologyIds } = body;
+  const {
+    name,
+    slug,
+    tagline,
+    problem,
+    solution,
+    results,
+    caseStudyMd,
+    imageUrl,
+    architectureUrl,
+    demoUrl,
+    prodUrl,
+    repoUrl,
+    impactMetrics,
+    sortOrder,
+    isFeatured,
+    isPublished,
+    technologyIds,
+  } = body;
 
   await prisma.projectTechnology.deleteMany({ where: { projectId: Number(id) } });
 
@@ -29,11 +50,19 @@ export async function PUT(request: NextRequest, { params }: Params) {
     data: {
       name,
       slug,
+      tagline: tagline ?? null,
       problem: problem ?? null,
       solution: solution ?? null,
       results: results ?? null,
+      caseStudyMd: caseStudyMd ?? null,
       imageUrl: imageUrl ?? null,
+      architectureUrl: architectureUrl ?? null,
+      demoUrl: demoUrl ?? null,
+      prodUrl: prodUrl ?? null,
+      repoUrl: repoUrl ?? null,
+      impactMetrics: impactMetrics ?? undefined,
       sortOrder: sortOrder ?? 0,
+      isFeatured: isFeatured ?? false,
       isPublished: isPublished ?? true,
       technologies: {
         create: (technologyIds ?? []).map((tid: number) => ({ technologyId: tid })),

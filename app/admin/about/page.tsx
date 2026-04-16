@@ -53,7 +53,7 @@ function ItemForm<T extends { id: number }>({
       </div>
       <div className="flex gap-2">
         <button type="submit" disabled={loading}
-          className="rounded-lg bg-[hsl(var(--color-accent))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-accent-foreground))] hover:opacity-90 disabled:opacity-60 transition">
+          className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 disabled:opacity-60 transition">
           {loading ? "…" : "Enregistrer"}
         </button>
         <button type="button" onClick={onCancel}
@@ -123,7 +123,7 @@ export default function AdminAboutPage() {
             Parcours (timeline)
           </h2>
           <button onClick={() => { setEditingTimeline(null); setShowTimelineForm(true); }}
-            className="rounded-lg bg-[hsl(var(--color-accent))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-accent-foreground))] hover:opacity-90 transition">
+            className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 transition">
             + Ajouter
           </button>
         </div>
@@ -176,7 +176,7 @@ export default function AdminAboutPage() {
             Valeurs / Vision
           </h2>
           <button onClick={() => { setEditingValue(null); setShowValueForm(true); }}
-            className="rounded-lg bg-[hsl(var(--color-accent))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-accent-foreground))] hover:opacity-90 transition">
+            className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 transition">
             + Ajouter
           </button>
         </div>

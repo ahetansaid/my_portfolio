@@ -106,6 +106,227 @@ async function main() {
   });
 
   console.log("Projets créés :", p1.name, "|", p2.name, "|", p3.name);
+
+  // Site stats
+  await prisma.siteStats.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      projectsShipped: 10,
+      yearsExperience: 3,
+      domainsCovered: 6,
+      clientsServed: 8,
+      currentlyBuilding: "FleetPulse v2 — SaaS gestion de flotte",
+    },
+  });
+
+  // Playground items (exemples)
+  const playground = [
+    {
+      slug: "qr-rotatif-anti-fraude",
+      title: "QR rotatif anti-fraude",
+      emoji: "🔐",
+      description:
+        "Expérimentation de QR codes signés HMAC-SHA256 qui rotent toutes les 30 secondes. Redis pour les nonces anti-replay.",
+      tags: ["security", "experiment", "redis"],
+      sortOrder: 1,
+    },
+    {
+      slug: "ged-ocr-mineru",
+      title: "OCR documents + classification ML",
+      emoji: "📄",
+      description:
+        "Pipeline MinerU + scikit-learn pour extraire et classer automatiquement des factures, contrats et devis.",
+      tags: ["ai", "ml", "ocr"],
+      sortOrder: 2,
+    },
+    {
+      slug: "ia-match-offre-profil",
+      title: "Matching IA offre / profil",
+      emoji: "🤖",
+      description:
+        "Endpoint OpenAI qui analyse une offre d'emploi et produit un score de fit + pitch personnalisé. Utilisé sur /recruiter.",
+      tags: ["ai", "openai", "recruiting"],
+      sortOrder: 3,
+    },
+  ];
+  for (const p of playground) {
+    await prisma.playgroundItem.upsert({
+      where: { slug: p.slug },
+      update: {},
+      create: p,
+    });
+  }
+  console.log("Playground créé :", playground.length);
+
+  // Availability
+  await prisma.availabilityStatus.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      status: "available",
+      message: "Disponible pour une nouvelle mission dès maintenant",
+    },
+  });
+
+  // Services
+  const services = [
+    {
+      slug: "audit-si",
+      title: "Audit SI & Cartographie",
+      icon: "🔍",
+      description: "Analyse complète de votre système d'information existant, cartographie des processus, identification des points de friction et recommandations concrètes d'amélioration.",
+      priceRange: "À partir de 1 500 €",
+      duration: "2 à 5 jours",
+      deliverables: ["Rapport d'audit détaillé", "Cartographie des processus", "Plan d'action priorisé", "Restitution orale"],
+      sortOrder: 1,
+    },
+    {
+      slug: "integration-erp-ged",
+      title: "Intégration ERP / GED",
+      icon: "🔧",
+      description: "Intégration et déploiement de solutions ERP, GED et systèmes métier. Migration de données, paramétrage, formation des utilisateurs et accompagnement au changement.",
+      priceRange: "Sur devis",
+      duration: "4 à 12 semaines",
+      deliverables: ["Installation & paramétrage", "Migration des données", "Formation équipes", "Documentation utilisateur", "Support post-déploiement"],
+      sortOrder: 2,
+    },
+    {
+      slug: "developpement-saas-custom",
+      title: "Développement SaaS sur mesure",
+      icon: "⚙️",
+      description: "Conception et développement de plateformes SaaS multi-tenants, avec architecture scalable, authentification, paiements et tableaux de bord analytiques.",
+      priceRange: "Sur devis",
+      duration: "6 à 16 semaines",
+      deliverables: ["Architecture technique", "MVP fonctionnel", "CI/CD + déploiement", "Documentation API", "Suivi post-lancement"],
+      sortOrder: 3,
+    },
+    {
+      slug: "consulting-architecture",
+      title: "Consulting & Architecture",
+      icon: "🧭",
+      description: "Accompagnement en architecture logicielle, choix technologiques, revue de code, optimisation des performances et mentorat technique pour équipes de développement.",
+      priceRange: "À la journée",
+      duration: "Flexible",
+      deliverables: ["Schémas d'architecture", "Revue de code", "Recommandations techniques", "Sessions de mentorat"],
+      sortOrder: 4,
+    },
+  ];
+
+  for (const s of services) {
+    await prisma.service.upsert({
+      where: { slug: s.slug },
+      update: {},
+      create: s,
+    });
+  }
+  console.log("Services créés :", services.length);
+
+  // Sample testimonials (publiés par défaut pour la démo)
+  const testimonials = [
+    {
+      authorName: "Aïcha K.",
+      authorRole: "Directrice Technique",
+      authorCompany: "Oasis Consulting",
+      content: "Un travail d'une qualité remarquable. Mohamed a livré notre plateforme dans les temps, avec une rigueur et une capacité d'adaptation qui ont fait toute la différence. Recommandé sans hésiter.",
+      rating: 5,
+      isPublished: true,
+      sortOrder: 1,
+    },
+    {
+      authorName: "Jean-Luc M.",
+      authorRole: "Fondateur",
+      authorCompany: "Drwintech",
+      content: "Mohamed comprend rapidement les enjeux métier et propose des solutions pragmatiques. Son approche orientée résultats et sa maîtrise technique font de lui un partenaire de confiance.",
+      rating: 5,
+      isPublished: true,
+      sortOrder: 2,
+    },
+    {
+      authorName: "Fatou D.",
+      authorRole: "Responsable IT",
+      authorCompany: "CNAD",
+      content: "Excellente intégration de notre système métier. Documentation claire, processus transparent, et un support après livraison qui fait la différence.",
+      rating: 5,
+      isPublished: true,
+      sortOrder: 3,
+    },
+  ];
+
+  for (const t of testimonials) {
+    const exists = await prisma.testimonial.findFirst({ where: { authorName: t.authorName, authorCompany: t.authorCompany } });
+    if (!exists) await prisma.testimonial.create({ data: t });
+  }
+  console.log("Témoignages créés :", testimonials.length);
+
+  // Timeline items
+  const timeline = [
+    { year: "2022", title: "Débuts en développement", description: "Premiers projets web en PHP/Laravel, découverte de l'intégration de systèmes métier et des enjeux réels d'entreprise.", sortOrder: 1 },
+    { year: "2023", title: "Spécialisation full-stack", description: "Maîtrise de Next.js, TypeScript et des architectures backend Node.js/NestJS. Premiers projets en production avec utilisateurs réels.", sortOrder: 2 },
+    { year: "2024", title: "Intégrateur SI", description: "Déploiements complexes : ERP, GED, DGMS. Accompagnement de plusieurs organisations sur des migrations et intégrations critiques.", sortOrder: 3 },
+    { year: "2026", title: "Projets SaaS multi-tenants", description: "Conception et livraison de plateformes SaaS complètes : gestion de flotte, adhésions, GED intelligente avec IA, systèmes anti-fraude.", sortOrder: 4 },
+  ];
+  for (const t of timeline) {
+    const exists = await prisma.timelineItem.findFirst({ where: { year: t.year, title: t.title } });
+    if (!exists) await prisma.timelineItem.create({ data: t });
+  }
+  console.log("Timeline créée :", timeline.length);
+
+  // About values
+  const values = [
+    { title: "Qualité & rigueur", description: "Code propre, tests, documentation. Un livrable solide qui ne casse pas après 2 mois.", sortOrder: 1 },
+    { title: "Orientation résultats", description: "Chaque projet est pensé pour résoudre un vrai problème métier, avec des métriques d'impact mesurables.", sortOrder: 2 },
+    { title: "Transparence", description: "Communication claire tout au long du projet, pas de surprise sur les délais ni les coûts.", sortOrder: 3 },
+    { title: "Apprentissage continu", description: "Veille technologique permanente pour proposer les meilleures solutions actuelles, sans surenchère inutile.", sortOrder: 4 },
+  ];
+  for (const v of values) {
+    const exists = await prisma.aboutValue.findFirst({ where: { title: v.title } });
+    if (!exists) await prisma.aboutValue.create({ data: v });
+  }
+  console.log("Valeurs créées :", values.length);
+
+  // Skill categories + items
+  const skillsData = [
+    {
+      name: "Développement",
+      description: "Langages et frameworks maîtrisés au quotidien",
+      icon: "💻",
+      sortOrder: 1,
+      items: ["TypeScript", "Next.js", "React", "Node.js", "NestJS", "Django", "Laravel", "Python", "PHP"],
+    },
+    {
+      name: "Systèmes & Infra",
+      description: "Bases de données, intégration et déploiement",
+      icon: "🔧",
+      sortOrder: 2,
+      items: ["MySQL", "PostgreSQL", "Redis", "Docker", "ERP", "GED", "DGMS", "Elasticsearch", "MinIO"],
+    },
+    {
+      name: "Méthodologies",
+      description: "Approches et outils de travail",
+      icon: "📋",
+      sortOrder: 3,
+      items: ["Agile / Scrum", "Git Flow", "CI/CD", "TDD", "Architecture logicielle", "API REST", "DevOps"],
+    },
+  ];
+  for (const cat of skillsData) {
+    const category = await prisma.skillCategory.upsert({
+      where: { id: cat.sortOrder },
+      update: { name: cat.name, description: cat.description, icon: cat.icon, sortOrder: cat.sortOrder },
+      create: { id: cat.sortOrder, name: cat.name, description: cat.description, icon: cat.icon, sortOrder: cat.sortOrder },
+    });
+    for (let i = 0; i < cat.items.length; i++) {
+      const exists = await prisma.skillItem.findFirst({ where: { categoryId: category.id, name: cat.items[i] } });
+      if (!exists) {
+        await prisma.skillItem.create({
+          data: { categoryId: category.id, name: cat.items[i], sortOrder: i },
+        });
+      }
+    }
+  }
+  console.log("Compétences créées");
 }
 
 main()

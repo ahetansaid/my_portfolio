@@ -9,6 +9,7 @@ export type Project = {
   id: number;
   slug: string;
   name: string;
+  tagline?: string | null;
   problem: string;
   solution: string;
   results: string;

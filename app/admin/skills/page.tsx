@@ -86,7 +86,7 @@ export default function AdminSkillsPage() {
           Compétences
         </h1>
         <button onClick={openNewCat}
-          className="rounded-lg bg-[hsl(var(--color-accent))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-foreground))] hover:opacity-90 transition">
+          className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 transition">
           + Nouvelle catégorie
         </button>
       </div>
@@ -121,7 +121,7 @@ export default function AdminSkillsPage() {
             </div>
             <div className="flex gap-3">
               <button type="submit" disabled={catLoading}
-                className="rounded-lg bg-[hsl(var(--color-accent))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-foreground))] hover:opacity-90 disabled:opacity-60 transition">
+                className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 disabled:opacity-60 transition">
                 {catLoading ? "Enregistrement…" : "Enregistrer"}
               </button>
               <button type="button" onClick={() => setShowCatForm(false)}

@@ -1,30 +1,60 @@
 import Link from "next/link";
+import { prisma } from "@/lib/db";
+import { HomeHero } from "@/components/home/HomeHero";
+import { FeaturedProjects } from "@/components/home/FeaturedProjects";
+import { ServicesPreview } from "@/components/home/ServicesPreview";
+import { HomeTestimonials } from "@/components/home/HomeTestimonials";
+import { HomeCTA } from "@/components/home/HomeCTA";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const projects = await prisma.project.findMany({
+    where: { isPublished: true },
+    orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }],
+    take: 6,
+    include: {
+      technologies: { include: { technology: true }, orderBy: { technology: { sortOrder: "asc" } } },
+    },
+  });
+
+  const services = await prisma.service.findMany({
+    where: { isPublished: true },
+    orderBy: { sortOrder: "asc" },
+    take: 4,
+  });
+
   return (
-    <div className="section-padding">
-      <section className="container-tight text-center">
-        <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-[hsl(var(--color-foreground))]">
-          Intégrateur Systèmes
-        </h1>
-        <p className="mt-4 text-xl text-[hsl(var(--color-muted))] max-w-2xl mx-auto">
-          Conception et intégration de solutions — ERP, DGMS, systèmes métier
-        </p>
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Link
-            href="/contact"
-            className="rounded-lg bg-[hsl(var(--color-accent))] px-6 py-3 text-sm font-medium text-[hsl(var(--color-accent-foreground))] shadow-sm transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))] focus:ring-offset-2"
-          >
-            Me contacter
-          </Link>
-          <Link
-            href="/projects"
-            className="rounded-lg border border-[hsl(var(--color-surface-muted))] bg-transparent px-6 py-3 text-sm font-medium text-[hsl(var(--color-foreground))] transition hover:bg-[hsl(var(--color-surface-muted))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))] focus:ring-offset-2"
-          >
-            Voir les projets
-          </Link>
-        </div>
-      </section>
-    </div>
+    <>
+      <HomeHero />
+      <FeaturedProjects
+        projects={projects.map((p) => {
+          const metrics = (p.impactMetrics as Array<{ label: string; value: string }> | null) ?? [];
+          return {
+            id: p.id,
+            slug: p.slug,
+            name: p.name,
+            tagline: p.tagline ?? p.problem?.slice(0, 120) ?? "",
+            imageUrl: p.imageUrl,
+            isFeatured: p.isFeatured,
+            primaryMetric: metrics[0] ?? null,
+            technologies: p.technologies.map((pt) => pt.technology.name),
+          };
+        })}
+      />
+      <ServicesPreview
+        services={services.map((s) => ({
+          id: s.id,
+          slug: s.slug,
+          title: s.title,
+          icon: s.icon,
+          description: s.description,
+          priceRange: s.priceRange,
+          duration: s.duration,
+        }))}
+      />
+      <HomeTestimonials />
+      <HomeCTA />
+    </>
   );
 }

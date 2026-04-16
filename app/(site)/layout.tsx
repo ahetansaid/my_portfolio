@@ -1,5 +1,6 @@
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
+import { VideoBackground } from "@/components/ui/VideoBackground";
 
 export default function SiteLayout({
   children,
@@ -7,9 +8,10 @@ export default function SiteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="relative flex flex-1 flex-col">
+      <VideoBackground />
       <Nav />
-      <main className="flex-1">{children}</main>
+      <main className="relative flex-1">{children}</main>
       <Footer />
     </div>
   );

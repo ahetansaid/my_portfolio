@@ -94,7 +94,7 @@ export default function AdminTechnologiesPage() {
           Technologies
         </h1>
         <button onClick={openNew}
-          className="rounded-lg bg-[hsl(var(--color-accent))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-foreground))] hover:opacity-90 transition">
+          className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 transition">
           + Nouvelle technologie
         </button>
       </div>
@@ -140,7 +140,7 @@ export default function AdminTechnologiesPage() {
             )}
             <div className="flex gap-3">
               <button type="submit" disabled={loading}
-                className="rounded-lg bg-[hsl(var(--color-accent))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-foreground))] hover:opacity-90 disabled:opacity-60 transition">
+                className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 disabled:opacity-60 transition">
                 {loading ? "Enregistrement…" : "Enregistrer"}
               </button>
               <button type="button" onClick={() => setShowForm(false)}

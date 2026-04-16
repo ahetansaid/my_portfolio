@@ -147,7 +147,7 @@ export default function ContactPage() {
                 )}
 
                 <button type="submit" disabled={status === "loading"}
-                  className="w-full rounded-lg bg-[hsl(var(--color-accent))] px-4 py-3 text-sm font-medium text-[hsl(var(--color-accent-foreground))] shadow-sm transition hover:opacity-90 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))] focus:ring-offset-2">
+                  className="w-full rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-3 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] shadow-sm transition hover:opacity-90 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent-warm))] focus:ring-offset-2">
                   {status === "loading" ? "Envoi en cours…" : "Envoyer le message"}
                 </button>
               </form>

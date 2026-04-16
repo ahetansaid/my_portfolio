@@ -1,13 +1,38 @@
 import type { MetadataRoute } from "next";
+import { prisma } from "@/lib/db";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://votre-portfolio.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },
-    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/projects`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/skills`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.6 },
-  ];
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { path: "", priority: 1, freq: "weekly" as const },
+    { path: "/projects", priority: 0.9, freq: "weekly" as const },
+    { path: "/services", priority: 0.9, freq: "monthly" as const },
+    { path: "/about", priority: 0.8, freq: "monthly" as const },
+    { path: "/skills", priority: 0.7, freq: "monthly" as const },
+    { path: "/recruiter", priority: 0.9, freq: "monthly" as const },
+    { path: "/booking", priority: 0.8, freq: "monthly" as const },
+    { path: "/contact", priority: 0.7, freq: "yearly" as const },
+  ].map((r) => ({
+    url: `${BASE_URL}${r.path}`,
+    lastModified: new Date(),
+    changeFrequency: r.freq,
+    priority: r.priority,
+  }));
+
+  try {
+    const projects = await prisma.project.findMany({
+      where: { isPublished: true },
+      select: { slug: true, updatedAt: true },
+    });
+    const projectRoutes: MetadataRoute.Sitemap = projects.map((p) => ({
+      url: `${BASE_URL}/projects/${p.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+    return [...staticRoutes, ...projectRoutes];
+  } catch {
+    return staticRoutes;
+  }
 }

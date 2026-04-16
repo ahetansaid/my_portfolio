@@ -30,20 +30,42 @@ model Technology {
 }
 
 model Project {
-  id           Int                   @id @default(autoincrement())
-  slug         String                @unique @db.VarChar(120)
-  name         String                @db.VarChar(200)
-  problem      String?               @db.Text
-  solution     String?               @db.Text
-  results      String?               @db.Text
-  imageUrl     String?               @map("image_url") @db.VarChar(500)
-  sortOrder    Int                   @default(0) @map("sort_order")
-  isPublished  Boolean               @default(true) @map("is_published")
-  createdAt    DateTime              @default(now()) @map("created_at")
-  updatedAt    DateTime              @updatedAt @map("updated_at")
-  technologies ProjectTechnology[]
+  id              Int                 @id @default(autoincrement())
+  slug            String              @unique @db.VarChar(120)
+  name            String              @db.VarChar(200)
+  tagline         String?             @db.VarChar(300)
+  problem         String?             @db.Text
+  solution        String?             @db.Text
+  results         String?             @db.Text
+  caseStudyMd     String?             @map("case_study_md") @db.LongText
+  imageUrl        String?             @map("image_url") @db.VarChar(500)
+  architectureUrl String?             @map("architecture_url") @db.VarChar(500)
+  demoUrl         String?             @map("demo_url") @db.VarChar(500)
+  prodUrl         String?             @map("prod_url") @db.VarChar(500)
+  repoUrl         String?             @map("repo_url") @db.VarChar(500)
+  impactMetrics   Json?               @map("impact_metrics")
+  sortOrder       Int                 @default(0) @map("sort_order")
+  isFeatured      Boolean             @default(false) @map("is_featured")
+  isPublished     Boolean             @default(true) @map("is_published")
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+  technologies    ProjectTechnology[]
+  socialLinks     ProjectSocialLink[]
 
   @@map("projects")
+}
+
+model ProjectSocialLink {
+  id        Int            @id @default(autoincrement())
+  projectId Int            @map("project_id")
+  platform  SocialPlatform
+  url       String         @db.VarChar(500)
+  title     String?        @db.VarChar(255)
+  sortOrder Int            @default(0) @map("sort_order")
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("project_social_links")
 }
 
 model ProjectTechnology {
@@ -63,6 +85,7 @@ model ContactMessage {
   email     String   @db.VarChar(255)
   subject   String?  @db.VarChar(255)
   message   String   @db.Text
+  isRead    Boolean  @default(false) @map("is_read")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("contact_messages")
@@ -107,6 +130,7 @@ model SkillCategory {
 model SkillItem {
   id         Int           @id @default(autoincrement())
   name       String        @db.VarChar(100)
+  level      Int           @default(3)
   sortOrder  Int           @default(0) @map("sort_order")
   categoryId Int           @map("category_id")
   category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -116,8 +140,122 @@ model SkillItem {
   @@map("skill_items")
 }
 
+model Testimonial {
+  id            Int      @id @default(autoincrement())
+  authorName    String   @map("author_name") @db.VarChar(150)
+  authorRole    String?  @map("author_role") @db.VarChar(150)
+  authorCompany String?  @map("author_company") @db.VarChar(150)
+  authorAvatar  String?  @map("author_avatar") @db.VarChar(500)
+  linkedinUrl   String?  @map("linkedin_url") @db.VarChar(500)
+  content       String   @db.Text
+  rating        Int      @default(5)
+  isPublished   Boolean  @default(false) @map("is_published")
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("testimonials")
+}
+
+model Service {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(200)
+  slug         String   @unique @db.VarChar(150)
+  icon         String?  @db.VarChar(50)
+  description  String   @db.Text
+  priceRange   String?  @map("price_range") @db.VarChar(100)
+  duration     String?  @db.VarChar(100)
+  deliverables Json?
+  sortOrder    Int      @default(0) @map("sort_order")
+  isPublished  Boolean  @default(true) @map("is_published")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("services")
+}
+
+model AvailabilityStatus {
+  id                Int               @id @default(autoincrement())
+  status            AvailabilityState @default(available)
+  message           String?           @db.VarChar(500)
+  nextAvailableDate DateTime?         @map("next_available_date")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  @@map("availability_status")
+}
+
+model Booking {
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(150)
+  email         String        @db.VarChar(255)
+  company       String?       @db.VarChar(200)
+  phone         String?       @db.VarChar(50)
+  topic         String        @db.VarChar(300)
+  message       String?       @db.Text
+  preferredDate DateTime?     @map("preferred_date")
+  duration      Int           @default(30)
+  status        BookingStatus @default(pending)
+  adminNotes    String?       @map("admin_notes") @db.Text
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, createdAt])
+  @@map("bookings")
+}
+
+model SiteStats {
+  id                Int      @id @default(autoincrement())
+  projectsShipped   Int      @default(0) @map("projects_shipped")
+  yearsExperience   Int      @default(0) @map("years_experience")
+  domainsCovered    Int      @default(0) @map("domains_covered")
+  clientsServed     Int      @default(0) @map("clients_served")
+  currentlyBuilding String?  @map("currently_building") @db.VarChar(300)
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("site_stats")
+}
+
+model PlaygroundItem {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique @db.VarChar(120)
+  title       String   @db.VarChar(200)
+  emoji       String?  @db.VarChar(10)
+  description String   @db.Text
+  imageUrl    String?  @map("image_url") @db.VarChar(500)
+  demoUrl     String?  @map("demo_url") @db.VarChar(500)
+  repoUrl     String?  @map("repo_url") @db.VarChar(500)
+  tags        Json?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("playground_items")
+}
+
 enum TechnologyCategory {
   development
   systems
   methodologies
+}
+
+enum SocialPlatform {
+  linkedin
+  twitter
+  youtube
+  devto
+  medium
+  github
+  other
+}
+
+enum AvailabilityState {
+  available
+  on_mission
+  unavailable
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
 }
