@@ -256,26 +256,42 @@ export function AboutClient({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
-            className="grid gap-5 md:grid-cols-3"
+            className="grid gap-6 md:grid-cols-3"
           >
-            {FORMATIONS.map((f) => (
+            {FORMATIONS.map((f, i) => (
               <motion.div
                 key={f.school}
                 variants={fadeUp}
-                className="group rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                whileHover={{ y: -6 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="group relative overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-7 shadow-sm transition-shadow hover:shadow-2xl"
               >
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[hsl(var(--color-accent-warm))]">
-                  {f.year}
+                {/* Gradient top accent line */}
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[hsl(var(--color-accent))] via-[hsl(var(--color-accent-warm))] to-[hsl(var(--color-electric))] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                {/* Index number XL en arrière-plan */}
+                <div className="pointer-events-none absolute -right-2 -top-4 font-display text-9xl font-extrabold leading-none text-[hsl(var(--color-accent))]/[0.06] transition-colors duration-500 group-hover:text-[hsl(var(--color-accent-warm))]/[0.12]">
+                  0{i + 1}
                 </div>
-                <h3 className="mt-2 font-display text-base font-bold text-[hsl(var(--color-foreground))]">
-                  {f.degree}
-                </h3>
-                <p className="mt-1 text-sm font-semibold text-[hsl(var(--color-accent))]">
-                  {f.school}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-[hsl(var(--color-muted))]">
-                  {f.detail}
-                </p>
+
+                {/* Glow hover */}
+                <div className="pointer-events-none absolute -inset-x-8 -bottom-16 h-40 rounded-full bg-[hsl(var(--color-accent))]/20 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
+
+                <div className="relative">
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent-warm))]">
+                    {f.year}
+                  </div>
+                  <h3 className="mt-3 font-display text-lg font-extrabold leading-tight text-[hsl(var(--color-foreground))]">
+                    {f.degree}
+                  </h3>
+                  <div className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-[hsl(var(--color-accent))]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--color-accent))]" />
+                    {f.school}
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-[hsl(var(--color-muted))]">
+                    {f.detail}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -299,32 +315,71 @@ export function AboutClient({
             <h2 className="mb-8 font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-4xl">
               Ce que j&apos;ai validé.
             </h2>
-            <motion.ul
+            <motion.div
               variants={stagger}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="space-y-3"
+              className="grid gap-4 sm:grid-cols-2"
             >
-              {CERTIFICATES.map((c, i) => (
-                <motion.li
-                  key={i}
-                  variants={fadeUp}
-                  className="flex items-start gap-4 rounded-xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-4 transition hover:border-[hsl(var(--color-accent))]/40"
-                >
-                  <span className="text-2xl">{c.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-display font-bold text-[hsl(var(--color-foreground))]">
-                      {c.title}
+              {CERTIFICATES.map((c, i) => {
+                // Gradient unique par card (cycle sur 3 tons)
+                const tones = [
+                  "from-[hsl(var(--color-accent))]/15 to-[hsl(var(--color-accent))]/0",
+                  "from-[hsl(var(--color-accent-warm))]/15 to-[hsl(var(--color-accent-warm))]/0",
+                  "from-[hsl(var(--color-electric))]/15 to-[hsl(var(--color-electric))]/0",
+                ];
+                const iconBg = [
+                  "bg-[hsl(var(--color-accent))]/15 text-[hsl(var(--color-accent))]",
+                  "bg-[hsl(var(--color-accent-warm))]/15 text-[hsl(var(--color-accent-warm))]",
+                  "bg-[hsl(var(--color-electric))]/15 text-[hsl(var(--color-electric))]",
+                ];
+                const tone = tones[i % 3];
+                const ib = iconBg[i % 3];
+
+                return (
+                  <motion.div
+                    key={i}
+                    variants={fadeUp}
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                    className="group relative overflow-hidden rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-5 shadow-sm transition-shadow hover:shadow-xl"
+                  >
+                    {/* Gradient hover overlay */}
+                    <div
+                      className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${tone} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
+                    />
+
+                    <div className="relative flex items-start gap-4">
+                      {/* Icon dans un cercle gradient */}
+                      <div
+                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl ${ib} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[-8deg]`}
+                      >
+                        {c.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-display text-sm font-extrabold leading-tight text-[hsl(var(--color-foreground))]">
+                          {c.title}
+                        </div>
+                        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-[hsl(var(--color-muted))]">
+                          <span className="font-semibold uppercase tracking-wider">
+                            {c.issuer}
+                          </span>
+                          {c.year && (
+                            <>
+                              <span className="text-[hsl(var(--color-surface-muted))]">•</span>
+                              <span className="font-mono text-[hsl(var(--color-accent))]">
+                                {c.year}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-0.5 text-xs text-[hsl(var(--color-muted))]">
-                      {c.issuer}
-                      {c.year && ` · ${c.year}`}
-                    </div>
-                  </div>
-                </motion.li>
-              ))}
-            </motion.ul>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
           </motion.div>
 
           {/* LANGUES */}
@@ -393,20 +448,45 @@ export function AboutClient({
               viewport={{ once: true, margin: "-80px" }}
               className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
             >
-              {values.map((v) => (
-                <motion.div
-                  key={v.id}
-                  variants={fadeUp}
-                  className="rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm"
-                >
-                  <h3 className="font-display font-bold text-[hsl(var(--color-foreground))]">
-                    {v.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[hsl(var(--color-muted))]">
-                    {v.description}
-                  </p>
-                </motion.div>
-              ))}
+              {values.map((v, i) => {
+                const accents = [
+                  { dot: "bg-[hsl(var(--color-accent))]", text: "text-[hsl(var(--color-accent))]", bar: "from-[hsl(var(--color-accent))] to-transparent" },
+                  { dot: "bg-[hsl(var(--color-accent-warm))]", text: "text-[hsl(var(--color-accent-warm))]", bar: "from-[hsl(var(--color-accent-warm))] to-transparent" },
+                  { dot: "bg-[hsl(var(--color-electric))]", text: "text-[hsl(var(--color-electric))]", bar: "from-[hsl(var(--color-electric))] to-transparent" },
+                  { dot: "bg-[hsl(var(--color-accent))]", text: "text-[hsl(var(--color-accent))]", bar: "from-[hsl(var(--color-accent))] to-transparent" },
+                ];
+                const acc = accents[i % 4];
+                return (
+                  <motion.div
+                    key={v.id}
+                    variants={fadeUp}
+                    whileHover={{ y: -6 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                    className="group relative overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm transition-shadow hover:shadow-2xl"
+                  >
+                    {/* Left accent bar */}
+                    <div className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${acc.bar}`} />
+
+                    {/* Corner glow on hover */}
+                    <div className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full ${acc.dot} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20`} />
+
+                    <div className="relative">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`flex h-8 w-8 items-center justify-center rounded-full ${acc.dot}/10 font-mono text-xs font-extrabold ${acc.text}`}>
+                          0{i + 1}
+                        </span>
+                        <span className={`h-px flex-1 bg-gradient-to-r ${acc.bar}`} />
+                      </div>
+                      <h3 className="mt-5 font-display text-lg font-extrabold leading-tight text-[hsl(var(--color-foreground))]">
+                        {v.title}
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-[hsl(var(--color-muted))]">
+                        {v.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
