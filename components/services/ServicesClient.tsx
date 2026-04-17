@@ -64,13 +64,13 @@ export function ServicesClient({ services }: { services: Service[] }) {
             variants={fadeUp}
             whileHover={{ y: -8 }}
             transition={{ type: "spring", stiffness: 300, damping: 22 }}
-            className="group relative flex flex-col overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-8 shadow-sm transition-shadow hover:shadow-2xl sm:p-10"
+            className="group relative flex flex-col overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm transition-shadow hover:shadow-2xl sm:p-8 lg:p-10"
           >
             {/* LEFT ACCENT BAR */}
             <div className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${tone.bar}`} />
 
-            {/* NUMBER XL EN ARRIÈRE-PLAN */}
-            <div className={`pointer-events-none absolute -right-4 -top-6 font-display text-[10rem] font-extrabold leading-none ${tone.numText} opacity-[0.06] transition-opacity duration-500 group-hover:opacity-[0.12]`}>
+            {/* NUMBER XL EN ARRIÈRE-PLAN — clamp responsive */}
+            <div className={`pointer-events-none absolute -right-2 -top-2 font-display text-[5rem] font-extrabold leading-none sm:-right-4 sm:-top-6 sm:text-[8rem] lg:text-[10rem] ${tone.numText} opacity-[0.06] transition-opacity duration-500 group-hover:opacity-[0.12]`}>
               {num}
             </div>
 

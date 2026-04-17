@@ -396,7 +396,7 @@ function DiamondPhase({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative overflow-hidden rounded-3xl border ${s.borderColor} ${s.bgSoft} p-8 sm:p-10`}
+      className={`relative overflow-hidden rounded-3xl border ${s.borderColor} ${s.bgSoft} p-5 sm:p-8 lg:p-10`}
     >
       {/* Left accent bar */}
       <div className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${s.barGradient}`} />
@@ -404,24 +404,24 @@ function DiamondPhase({
       {/* Decorative gradient blob */}
       <div className={`pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full ${s.dotColor} opacity-[0.08] blur-3xl`} />
 
-      <div className="relative grid gap-8 lg:grid-cols-[auto_1fr] lg:gap-12">
+      <div className="relative grid gap-6 lg:grid-cols-[auto_1fr] lg:gap-12">
         {/* LEFT — Number + Icon + Label */}
-        <div className="flex items-start gap-4 lg:flex-col lg:items-start lg:gap-3">
+        <div className="flex items-center gap-4 lg:flex-col lg:items-start lg:gap-3">
           <motion.div
             whileHover={{ scale: 1.08, rotate: -6 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] text-3xl shadow-lg sm:h-20 sm:w-20 sm:text-4xl"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] text-2xl shadow-lg sm:h-20 sm:w-20 sm:text-4xl"
           >
             {icon}
           </motion.div>
-          <div>
-            <div className={`font-mono text-sm font-extrabold ${s.numberColor}`}>
+          <div className="min-w-0 flex-1 lg:flex-initial">
+            <div className={`font-mono text-xs font-extrabold sm:text-sm ${s.numberColor}`}>
               {number}
             </div>
-            <div className={`font-display text-2xl font-extrabold uppercase tracking-tight sm:text-3xl ${s.numberColor}`}>
+            <div className={`font-display text-xl font-extrabold uppercase tracking-tight leading-none sm:text-2xl lg:text-3xl ${s.numberColor}`}>
               {label}
             </div>
-            <div className="mt-0.5 text-xs font-semibold uppercase tracking-widest text-[hsl(var(--color-muted))]">
+            <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-[hsl(var(--color-muted))] sm:text-xs">
               {subLabel}
             </div>
           </div>
@@ -429,7 +429,7 @@ function DiamondPhase({
 
         {/* RIGHT — Description + Metrics */}
         <div>
-          <p className="text-lg leading-relaxed text-[hsl(var(--color-foreground))]">
+          <p className="text-[15px] leading-relaxed text-[hsl(var(--color-foreground))] sm:text-lg">
             {description}
           </p>
 

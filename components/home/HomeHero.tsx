@@ -48,7 +48,7 @@ export function HomeHero() {
 
             <motion.h1
               variants={fadeUp}
-              className="font-display text-5xl font-extrabold leading-[0.95] tracking-tight text-[hsl(var(--color-foreground))] sm:text-7xl lg:text-[5.5rem]"
+              className="font-display text-[2.75rem] font-extrabold leading-[1] tracking-tight text-[hsl(var(--color-foreground))] sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[5.5rem]"
             >
               Je ship des{" "}
               <span className="relative inline-block">
@@ -61,8 +61,8 @@ export function HomeHero() {
                   className="absolute -bottom-1 left-0 h-1 w-full origin-left rounded-full bg-gradient-to-r from-[hsl(var(--color-accent))] via-[hsl(var(--color-accent-warm))] to-[hsl(var(--color-electric))]"
                 />
               </span>
-              <br />
-              qui{" "}
+              <br className="hidden sm:block" />
+              {" qui "}
               <span className="italic font-light text-[hsl(var(--color-muted))]">tournent</span>{" "}
               en prod.
             </motion.h1>

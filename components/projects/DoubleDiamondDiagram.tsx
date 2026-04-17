@@ -88,8 +88,8 @@ export function DoubleDiamondDiagram({ active }: { active?: number }) {
           ))}
         </svg>
 
-        {/* Labels sous le SVG */}
-        <div className="mt-6 grid grid-cols-4 gap-2 text-center">
+        {/* Labels sous le SVG — 2x2 sur mobile étroit, 4 cols dès sm */}
+        <div className="mt-6 grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
           {PHASES.map((phase, i) => (
             <motion.div
               key={phase.key}
@@ -103,10 +103,10 @@ export function DoubleDiamondDiagram({ active }: { active?: number }) {
                   : "border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))]"
               }`}
             >
-              <div className="font-display text-xs font-extrabold uppercase tracking-wider sm:text-sm" style={{ color: phase.color }}>
+              <div className="font-display text-[11px] font-extrabold uppercase tracking-wider sm:text-sm" style={{ color: phase.color }}>
                 {phase.label}
               </div>
-              <div className="mt-0.5 text-[10px] text-[hsl(var(--color-muted))] sm:text-xs">
+              <div className="mt-0.5 text-[9px] text-[hsl(var(--color-muted))] sm:text-xs">
                 {phase.sub}
               </div>
             </motion.div>
