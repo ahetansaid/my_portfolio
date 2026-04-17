@@ -261,12 +261,50 @@ async function main() {
   }
   console.log("Témoignages créés :", testimonials.length);
 
-  // Timeline items
+  // Timeline — parcours réel (CV)
   const timeline = [
-    { year: "2022", title: "Débuts en développement", description: "Premiers projets web en PHP/Laravel, découverte de l'intégration de systèmes métier et des enjeux réels d'entreprise.", sortOrder: 1 },
-    { year: "2023", title: "Spécialisation full-stack", description: "Maîtrise de Next.js, TypeScript et des architectures backend Node.js/NestJS. Premiers projets en production avec utilisateurs réels.", sortOrder: 2 },
-    { year: "2024", title: "Intégrateur SI", description: "Déploiements complexes : ERP, GED, DGMS. Accompagnement de plusieurs organisations sur des migrations et intégrations critiques.", sortOrder: 3 },
-    { year: "2026", title: "Projets SaaS multi-tenants", description: "Conception et livraison de plateformes SaaS complètes : gestion de flotte, adhésions, GED intelligente avec IA, systèmes anti-fraude.", sortOrder: 4 },
+    {
+      year: "2019-2020",
+      title: "Baccalauréat Série C — CEG Akpakpa-Centre",
+      description: "Baccalauréat scientifique (maths, physique, biologie). Première approche de la logique et des sciences exactes, socle des futures études techniques.",
+      sortOrder: 1,
+    },
+    {
+      year: "Juil-Oct 2022",
+      title: "Stage — Port Autonome de Cotonou (DSI)",
+      description: "Stage professionnel à la Direction des Systèmes d'Information. Immersion dans l'administration de systèmes critiques, maintenance et exploitation.",
+      sortOrder: 2,
+    },
+    {
+      year: "2021-2024",
+      title: "Licence Pro Systèmes Informatiques & Logiciels — ESEP Le Berger",
+      description: "Formation en développement d'applications, bases de données et génie logiciel. Premiers vrais projets web en PHP, Laravel, MySQL.",
+      sortOrder: 3,
+    },
+    {
+      year: "Oct 2024",
+      title: "Lauréat — Défi des Innovateurs Blockchain",
+      description: "Reconnaissance par Africa Blockchain Institute pour un projet innovant combinant blockchain et usage concret.",
+      sortOrder: 4,
+    },
+    {
+      year: "Déc 2024 - Mars 2025",
+      title: "Stage — Ministère du Travail et de la Fonction Publique",
+      description: "Stage professionnel dans un environnement administratif de l'État béninois. Conception et déploiement de solutions internes.",
+      sortOrder: 5,
+    },
+    {
+      year: "2024-présent",
+      title: "Coding Academy Full Stack — Epitech Bénin",
+      description: "Formation intensive par projet chez Epitech : Next.js, React, TypeScript, architectures scalables, DevOps.",
+      sortOrder: 6,
+    },
+    {
+      year: "Avril 2025-présent",
+      title: "Intégrateur Système Informatique — Drwintech Inc.",
+      description: "Intégration et déploiement de systèmes métier : ERP, GED, DGMS, gestion de flotte GPS. Livraison de SaaS en production pour des clients réels.",
+      sortOrder: 7,
+    },
   ];
   for (const t of timeline) {
     const exists = await prisma.timelineItem.findFirst({ where: { year: t.year, title: t.title } });

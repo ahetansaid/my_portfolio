@@ -85,12 +85,20 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://linkedin.com/in/mohamed-said-ahetan"
+                  href="https://linkedin.com/in/mohamed-saïd-ahetan"
                   target="_blank"
                   rel="noopener"
                   className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition"
                 >
                   LinkedIn →
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:saidahetan@gmail.com"
+                  className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition"
+                >
+                  Email direct →
                 </a>
               </li>
             </ul>
