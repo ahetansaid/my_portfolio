@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { fadeUp, stagger, slideInLeft, slideInRight } from "@/lib/motion";
+import { fadeUp, stagger } from "@/lib/motion";
+import { DoubleDiamondDiagram } from "./DoubleDiamondDiagram";
 
 type Project = {
   id: number;
   slug: string;
   name: string;
   tagline: string | null;
+  discoveryContext: string | null;
   problem: string | null;
+  approach: string | null;
   solution: string | null;
   results: string | null;
   caseStudyMd: string | null;
@@ -138,48 +141,85 @@ export function ProjectDetailClient({ project }: { project: Project }) {
         </section>
       )}
 
-      {/* PROBLEM / SOLUTION / RESULTS */}
-      <section className="section-padding">
-        <div className="container-tight grid gap-12 lg:grid-cols-3">
-          {project.problem && (
-            <motion.div
-              variants={slideInLeft}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-            >
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
-                🎯 Problème
-              </div>
-              <p className="leading-relaxed text-[hsl(var(--color-foreground))]">{project.problem}</p>
-            </motion.div>
-          )}
-          {project.solution && (
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-            >
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-accent))]/10 px-3 py-1 text-xs font-semibold text-[hsl(var(--color-accent))]">
-                💡 Solution
-              </div>
-              <p className="leading-relaxed text-[hsl(var(--color-foreground))]">{project.solution}</p>
-            </motion.div>
-          )}
-          {project.results && (
-            <motion.div
-              variants={slideInRight}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-            >
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                ✓ Résultats
-              </div>
-              <p className="leading-relaxed text-[hsl(var(--color-foreground))]">{project.results}</p>
-            </motion.div>
-          )}
+      {/* DOUBLE DIAMOND METHODOLOGY */}
+      <section className="section-padding border-t border-[hsl(var(--color-surface-muted))]">
+        <div className="container-tight">
+          {/* Intro */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-12 max-w-2xl"
+          >
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--color-accent))]/30 bg-[hsl(var(--color-accent))]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent))]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--color-accent))]" />
+              Méthodologie Double Diamond
+            </div>
+            <h2 className="font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
+              Le parcours, pas juste le code.
+            </h2>
+            <p className="mt-4 text-[hsl(var(--color-muted))]">
+              4 phases : découvrir le terrain, définir le vrai problème, développer la solution,
+              livrer l&apos;impact mesuré.
+            </p>
+          </motion.div>
+
+          {/* Diagramme animé */}
+          <div className="mb-16">
+            <DoubleDiamondDiagram />
+          </div>
+
+          {/* 4 phases en journey vertical */}
+          <div className="space-y-16">
+            {/* PHASE 1 — DISCOVER */}
+            {(project.discoveryContext || project.tagline) && (
+              <DiamondPhase
+                number="01"
+                label="Discover"
+                subLabel="Contexte & exploration"
+                color="accent"
+                icon="🔍"
+                description={project.discoveryContext || project.tagline || ""}
+              />
+            )}
+
+            {/* PHASE 2 — DEFINE */}
+            {project.problem && (
+              <DiamondPhase
+                number="02"
+                label="Define"
+                subLabel="Problème identifié"
+                color="warm"
+                icon="🎯"
+                description={project.problem}
+              />
+            )}
+
+            {/* PHASE 3 — DEVELOP */}
+            {(project.approach || project.solution) && (
+              <DiamondPhase
+                number="03"
+                label="Develop"
+                subLabel="Approche & solution"
+                color="electric"
+                icon="💡"
+                description={project.approach || project.solution || ""}
+              />
+            )}
+
+            {/* PHASE 4 — DELIVER */}
+            {project.results && (
+              <DiamondPhase
+                number="04"
+                label="Deliver"
+                subLabel="Résultats livrés"
+                color="gradient"
+                icon="🚀"
+                description={project.results}
+                metrics={project.impactMetrics}
+              />
+            )}
+          </div>
         </div>
       </section>
 
@@ -286,5 +326,137 @@ export function ProjectDetailClient({ project }: { project: Project }) {
         </div>
       </section>
     </article>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// DIAMOND PHASE — composant pour chaque phase du Double Diamond
+// ════════════════════════════════════════════════════════════════
+
+type PhaseColor = "accent" | "warm" | "electric" | "gradient";
+
+const phaseStyles: Record<PhaseColor, {
+  numberColor: string;
+  borderColor: string;
+  bgSoft: string;
+  barGradient: string;
+  dotColor: string;
+}> = {
+  accent: {
+    numberColor: "text-[hsl(var(--color-accent))]",
+    borderColor: "border-[hsl(var(--color-accent))]/30",
+    bgSoft: "bg-[hsl(var(--color-accent))]/5",
+    barGradient: "from-[hsl(var(--color-accent))] to-transparent",
+    dotColor: "bg-[hsl(var(--color-accent))]",
+  },
+  warm: {
+    numberColor: "text-[hsl(var(--color-accent-warm))]",
+    borderColor: "border-[hsl(var(--color-accent-warm))]/30",
+    bgSoft: "bg-[hsl(var(--color-accent-warm))]/5",
+    barGradient: "from-[hsl(var(--color-accent-warm))] to-transparent",
+    dotColor: "bg-[hsl(var(--color-accent-warm))]",
+  },
+  electric: {
+    numberColor: "text-[hsl(var(--color-electric))]",
+    borderColor: "border-[hsl(var(--color-electric))]/30",
+    bgSoft: "bg-[hsl(var(--color-electric))]/5",
+    barGradient: "from-[hsl(var(--color-electric))] to-transparent",
+    dotColor: "bg-[hsl(var(--color-electric))]",
+  },
+  gradient: {
+    numberColor: "bg-gradient-to-r from-[hsl(var(--color-accent))] via-[hsl(var(--color-accent-warm))] to-[hsl(var(--color-electric))] bg-clip-text text-transparent",
+    borderColor: "border-[hsl(var(--color-accent-warm))]/30",
+    bgSoft: "bg-gradient-to-br from-[hsl(var(--color-accent))]/10 via-transparent to-[hsl(var(--color-electric))]/10",
+    barGradient: "from-[hsl(var(--color-accent))] via-[hsl(var(--color-accent-warm))] to-[hsl(var(--color-electric))]",
+    dotColor: "bg-gradient-to-r from-[hsl(var(--color-accent))] to-[hsl(var(--color-electric))]",
+  },
+};
+
+function DiamondPhase({
+  number,
+  label,
+  subLabel,
+  color,
+  icon,
+  description,
+  metrics,
+}: {
+  number: string;
+  label: string;
+  subLabel: string;
+  color: PhaseColor;
+  icon: string;
+  description: string;
+  metrics?: Array<{ label: string; value: string }>;
+}) {
+  const s = phaseStyles[color];
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`relative overflow-hidden rounded-3xl border ${s.borderColor} ${s.bgSoft} p-8 sm:p-10`}
+    >
+      {/* Left accent bar */}
+      <div className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${s.barGradient}`} />
+
+      {/* Decorative gradient blob */}
+      <div className={`pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full ${s.dotColor} opacity-[0.08] blur-3xl`} />
+
+      <div className="relative grid gap-8 lg:grid-cols-[auto_1fr] lg:gap-12">
+        {/* LEFT — Number + Icon + Label */}
+        <div className="flex items-start gap-4 lg:flex-col lg:items-start lg:gap-3">
+          <motion.div
+            whileHover={{ scale: 1.08, rotate: -6 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] text-3xl shadow-lg sm:h-20 sm:w-20 sm:text-4xl"
+          >
+            {icon}
+          </motion.div>
+          <div>
+            <div className={`font-mono text-sm font-extrabold ${s.numberColor}`}>
+              {number}
+            </div>
+            <div className={`font-display text-2xl font-extrabold uppercase tracking-tight sm:text-3xl ${s.numberColor}`}>
+              {label}
+            </div>
+            <div className="mt-0.5 text-xs font-semibold uppercase tracking-widest text-[hsl(var(--color-muted))]">
+              {subLabel}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT — Description + Metrics */}
+        <div>
+          <p className="text-lg leading-relaxed text-[hsl(var(--color-foreground))]">
+            {description}
+          </p>
+
+          {/* Metrics inline (uniquement pour Deliver) */}
+          {metrics && metrics.length > 0 && (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {metrics.map((m, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-4 text-center"
+                >
+                  <div className="font-display text-3xl font-extrabold bg-gradient-to-r from-[hsl(var(--color-accent))] via-[hsl(var(--color-accent-warm))] to-[hsl(var(--color-electric))] bg-clip-text text-transparent">
+                    {m.value}
+                  </div>
+                  <div className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-[hsl(var(--color-muted))]">
+                    {m.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.article>
   );
 }

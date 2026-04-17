@@ -7,7 +7,9 @@ type Project = {
   id: number;
   slug: string;
   name: string;
+  discoveryContext?: string | null;
   problem: string;
+  approach?: string | null;
   solution: string;
   results: string;
   imageUrl: string | null;
@@ -19,7 +21,9 @@ type Project = {
 const emptyForm = {
   name: "",
   slug: "",
+  discoveryContext: "",
   problem: "",
+  approach: "",
   solution: "",
   results: "",
   imageUrl: "",
@@ -63,7 +67,9 @@ export default function AdminProjectsPage() {
     setForm({
       name: p.name,
       slug: p.slug,
+      discoveryContext: p.discoveryContext ?? "",
       problem: p.problem,
+      approach: p.approach ?? "",
       solution: p.solution,
       results: p.results,
       imageUrl: p.imageUrl ?? "",
@@ -141,20 +147,57 @@ export default function AdminProjectsPage() {
                   onChange={(e) => setForm({ ...form, slug: e.target.value })} />
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Problématique</label>
-              <textarea className={inputClass} rows={3} value={form.problem}
-                onChange={(e) => setForm({ ...form, problem: e.target.value })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Solution</label>
-              <textarea className={inputClass} rows={3} value={form.solution}
-                onChange={(e) => setForm({ ...form, solution: e.target.value })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Résultats</label>
-              <textarea className={inputClass} rows={3} value={form.results}
-                onChange={(e) => setForm({ ...form, results: e.target.value })} />
+            <div className="rounded-xl border border-[hsl(var(--color-accent))]/20 bg-[hsl(var(--color-accent))]/5 p-4">
+              <p className="mb-3 text-xs font-bold uppercase tracking-wider text-[hsl(var(--color-accent))]">
+                Double Diamond · 4 phases de la case study
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                    🔍 01 Discover — Contexte & découverte
+                  </label>
+                  <textarea className={inputClass} rows={3}
+                    placeholder="Situation de départ, utilisateurs, contraintes, ce qu'on a appris en explorant…"
+                    value={form.discoveryContext}
+                    onChange={(e) => setForm({ ...form, discoveryContext: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                    🎯 02 Define — Problématique identifiée
+                  </label>
+                  <textarea className={inputClass} rows={3}
+                    placeholder="Le vrai problème qu'il faut résoudre après l'exploration…"
+                    value={form.problem}
+                    onChange={(e) => setForm({ ...form, problem: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                    💡 03 Develop — Approche & architecture
+                  </label>
+                  <textarea className={inputClass} rows={3}
+                    placeholder="Options explorées, choix techniques, pourquoi cette approche…"
+                    value={form.approach}
+                    onChange={(e) => setForm({ ...form, approach: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                    🚀 03 Develop (legacy) — Solution livrée (si approach vide)
+                  </label>
+                  <textarea className={inputClass} rows={3}
+                    placeholder="Ce qui a été construit (utilisé en fallback si 'Approche' est vide)…"
+                    value={form.solution}
+                    onChange={(e) => setForm({ ...form, solution: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                    ✓ 04 Deliver — Résultats & impact mesuré
+                  </label>
+                  <textarea className={inputClass} rows={3}
+                    placeholder="Résultats concrets, métriques, gains mesurables…"
+                    value={form.results}
+                    onChange={(e) => setForm({ ...form, results: e.target.value })} />
+                </div>
+              </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
