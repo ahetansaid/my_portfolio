@@ -5,6 +5,11 @@ export type Technology = {
   category?: "development" | "systems" | "methodologies";
 };
 
+export type ImpactMetric = {
+  label: string;
+  value: string;
+};
+
 export type Project = {
   id: number;
   slug: string;
@@ -14,5 +19,9 @@ export type Project = {
   solution: string;
   results: string;
   imageUrl: string | null;
+  demoUrl?: string | null;
+  prodUrl?: string | null;
+  isFeatured?: boolean;
+  impactMetrics?: ImpactMetric[];
   technologies: Technology[];
 };

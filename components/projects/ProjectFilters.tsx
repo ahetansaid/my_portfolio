@@ -1,45 +1,91 @@
 "use client";
 
+import { motion } from "framer-motion";
 import type { Technology } from "@/lib/types";
 
 type ProjectFiltersProps = {
   technologies: Technology[];
   activeSlug: string | null;
   onFilter: (slug: string | null) => void;
+  counts: Record<string, number>;
+  totalCount: number;
 };
 
 export function ProjectFilters({
   technologies,
   activeSlug,
   onFilter,
+  counts,
+  totalCount,
 }: ProjectFiltersProps) {
+  const relevantTechs = technologies.filter((t) => counts[t.slug] > 0);
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <button
-        type="button"
+      <FilterPill
+        active={activeSlug === null}
         onClick={() => onFilter(null)}
-        className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-          activeSlug === null
-            ? "bg-[hsl(var(--color-accent))] text-[hsl(var(--color-accent-foreground))]"
-            : "bg-[hsl(var(--color-surface-muted))] text-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-accent))]/10 hover:text-[hsl(var(--color-accent))]"
-        }`}
-      >
-        Tous
-      </button>
-      {technologies.map((tech) => (
-        <button
+        label="Tous"
+        count={totalCount}
+      />
+      {relevantTechs.map((tech) => (
+        <FilterPill
           key={tech.id}
-          type="button"
+          active={activeSlug === tech.slug}
           onClick={() => onFilter(tech.slug)}
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-            activeSlug === tech.slug
-              ? "bg-[hsl(var(--color-accent))] text-[hsl(var(--color-accent-foreground))]"
-              : "bg-[hsl(var(--color-surface-muted))] text-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-accent))]/10 hover:text-[hsl(var(--color-accent))]"
-          }`}
-        >
-          {tech.name}
-        </button>
+          label={tech.name}
+          count={counts[tech.slug]}
+        />
       ))}
     </div>
+  );
+}
+
+function FilterPill({
+  active,
+  onClick,
+  label,
+  count,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all"
+    >
+      {active && (
+        <motion.span
+          layoutId="filter-active-indicator"
+          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-[hsl(var(--color-accent))] via-[hsl(var(--color-accent-warm))] to-[hsl(var(--color-electric))] shadow-[0_4px_20px_rgba(99,102,241,0.35)]"
+        />
+      )}
+      <span
+        className={`relative z-10 transition-colors ${
+          active
+            ? "text-white"
+            : "text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-foreground))]"
+        }`}
+      >
+        {label}
+      </span>
+      <span
+        className={`relative z-10 rounded-full px-1.5 text-[10px] font-bold transition-colors ${
+          active
+            ? "bg-white/20 text-white"
+            : "bg-[hsl(var(--color-surface-muted))] text-[hsl(var(--color-muted))]"
+        }`}
+      >
+        {count}
+      </span>
+      {!active && (
+        <span className="absolute inset-0 rounded-full border border-[hsl(var(--color-surface-muted))] transition-colors hover:border-[hsl(var(--color-accent))]/40" />
+      )}
+    </button>
   );
 }
