@@ -1,6 +1,7 @@
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { VideoBackground } from "@/components/ui/VideoBackground";
+import { MagicChat } from "@/components/ui/MagicChat";
 
 export default function SiteLayout({
   children,
@@ -13,6 +14,7 @@ export default function SiteLayout({
       <Nav />
       <main className="relative flex-1">{children}</main>
       <Footer />
+      <MagicChat />
     </div>
   );
 }
