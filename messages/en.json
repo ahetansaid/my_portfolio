@@ -263,6 +263,22 @@
     "code": "⚡ Code",
     "empty": "No public experiments yet."
   },
+  "cvPage": {
+    "badge": "Curriculum Vitae",
+    "title": "My full CV",
+    "description": "Education, experience, skills, certifications. Viewable online, downloadable as PDF.",
+    "version": "Version",
+    "openInTab": "Open in new tab",
+    "download": "Download",
+    "fullScreen": "Full screen",
+    "backToRecruiter": "← Recruiters' space",
+    "loading": "Loading PDF…",
+    "missing": {
+      "title": "{locale} CV not available yet",
+      "instructions": "The PDF file hasn't been uploaded yet. To add it, place it in your project's public folder at this exact path:",
+      "path": "Expected path:"
+    }
+  },
   "contactPage": {
     "title": "Contact",
     "description": "A question, a project, a collaboration? Drop me a line.",

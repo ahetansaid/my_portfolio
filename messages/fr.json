@@ -263,6 +263,22 @@
     "code": "⚡ Code",
     "empty": "Aucune expérience publique pour l'instant."
   },
+  "cvPage": {
+    "badge": "Curriculum Vitae",
+    "title": "Mon CV complet",
+    "description": "Formation, expériences, compétences, certifications. Consultable en ligne, téléchargeable en PDF.",
+    "version": "Version",
+    "openInTab": "Ouvrir dans un onglet",
+    "download": "Télécharger",
+    "fullScreen": "Plein écran",
+    "backToRecruiter": "← Espace recruteurs",
+    "loading": "Chargement du PDF…",
+    "missing": {
+      "title": "CV {locale} non disponible pour l'instant",
+      "instructions": "Le fichier PDF n'a pas encore été déposé. Pour l'ajouter, place-le dans le dossier public de ton projet avec ce chemin exact :",
+      "path": "Chemin attendu :"
+    }
+  },
   "contactPage": {
     "title": "Contact",
     "description": "Une question, un projet, une collaboration ? Écrivez-moi.",

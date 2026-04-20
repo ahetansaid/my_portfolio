@@ -137,16 +137,30 @@ export function RecruiterClient({
             </div>
           </motion.div>
 
-          <motion.a
-            variants={fadeUp}
-            href="/cv-mohamed-ahetan.pdf"
-            download
-            className="group flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[hsl(var(--color-accent-warm))] bg-[hsl(var(--color-accent-warm))]/5 p-8 text-center transition hover:bg-[hsl(var(--color-accent-warm))]/10"
-          >
-            <div className="text-4xl">📄</div>
-            <div className="mt-2 font-semibold text-[hsl(var(--color-foreground))]">Télécharger le CV</div>
-            <div className="text-xs text-[hsl(var(--color-muted))]">Format PDF</div>
-          </motion.a>
+          <motion.div variants={fadeUp}>
+            <Link
+              href="/cv"
+              className="group flex h-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[hsl(var(--color-accent-warm))] bg-[hsl(var(--color-accent-warm))]/5 p-8 text-center transition hover:-translate-y-1 hover:bg-[hsl(var(--color-accent-warm))]/10 hover:shadow-lg"
+            >
+              <motion.div
+                whileHover={{ rotate: -4, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="text-4xl"
+              >
+                📄
+              </motion.div>
+              <div className="mt-3 font-display text-base font-extrabold text-[hsl(var(--color-foreground))]">
+                Consulter le CV
+              </div>
+              <div className="mt-1 text-xs text-[hsl(var(--color-muted))]">
+                PDF · FR + EN
+              </div>
+              <div className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[hsl(var(--color-accent-warm))]">
+                Ouvrir
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </div>
+            </Link>
+          </motion.div>
         </motion.div>
 
         {/* IA MATCH */}
