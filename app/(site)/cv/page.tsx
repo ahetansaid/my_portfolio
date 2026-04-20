@@ -10,11 +10,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const CV_FILES = {
-  fr: "/cv-mohamed-said-ahetan-fr.pdf",
-  en: "/cv-mohamed-said-ahetan-en.pdf",
+const CV_URLS = {
+  fr: "/api/documents/cv-fr",
+  en: "/api/documents/cv-en",
 } as const;
 
 export default async function CVPage() {
-  return <CVViewer files={CV_FILES} />;
+  return <CVViewer files={CV_URLS} />;
 }

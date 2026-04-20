@@ -100,8 +100,7 @@ export function CVViewer({ files }: { files: Files }) {
               <span className="transition-transform group-hover:translate-x-1">↗</span>
             </a>
             <a
-              href={currentFile}
-              download
+              href={`${currentFile}?download=1`}
               className="btn-outline group"
             >
               <span>⬇ {t("download")}</span>
@@ -188,9 +187,15 @@ function MissingFileNotice({
       <p className="mx-auto mt-3 max-w-lg text-sm text-[hsl(var(--color-muted))]">
         {t("missing.instructions")}
       </p>
+      <a
+        href="/admin/documents"
+        className="mt-6 inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-accent-warm))] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:opacity-90"
+      >
+        🔧 Uploader depuis l&apos;admin
+      </a>
       <div className="mx-auto mt-6 max-w-md rounded-xl bg-[hsl(var(--color-surface-muted))] p-4 text-left font-mono text-xs text-[hsl(var(--color-foreground))]">
         <div className="text-[hsl(var(--color-muted))]">{t("missing.path")}</div>
-        <div className="mt-1 font-bold">public{file}</div>
+        <div className="mt-1 font-bold">{file}</div>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/admin/about", label: "À propos" },
   { href: "/admin/skills", label: "Compétences" },
   { href: "/admin/messages", label: "Messages" },
+  { href: "/admin/documents", label: "Documents" },
   { href: "/admin/settings", label: "Paramètres" },
 ];
 
