@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
+  const t = useTranslations("footer");
+  const tNav = useTranslations("nav");
   const year = new Date().getFullYear();
 
   return (
@@ -18,50 +23,50 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-3 text-sm text-[hsl(var(--color-muted))]">
-              Intégrateur SI & développeur full-stack. Je construis des systèmes métier qui tournent.
+              {t("tagline")}
             </p>
           </div>
 
           {/* Navigation */}
           <div>
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[hsl(var(--color-foreground))]">
-              Navigation
+              {t("navTitle")}
             </h3>
             <ul className="space-y-2 text-sm">
               {[
-                { href: "/projects", label: "Projets" },
-                { href: "/services", label: "Services" },
-                { href: "/about", label: "À propos" },
-                { href: "/skills", label: "Compétences" },
+                { href: "/projects", key: "projects" as const },
+                { href: "/services", key: "services" as const },
+                { href: "/about", key: "about" as const },
+                { href: "/playground", key: "playground" as const },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition">
-                    {l.label}
+                    {tNav(l.key)}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Pour qui */}
+          {/* Audience */}
           <div>
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[hsl(var(--color-foreground))]">
-              Pour qui
+              {t("audienceTitle")}
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/recruiter" className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition">
-                  Recruteurs
+                  {t("audienceRecruiters")}
                 </Link>
               </li>
               <li>
                 <Link href="/booking" className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition">
-                  Prendre un RDV
+                  {t("audienceBooking")}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition">
-                  Contact
+                  {t("audienceContact")}
                 </Link>
               </li>
             </ul>
@@ -70,35 +75,22 @@ export function Footer() {
           {/* Social */}
           <div>
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[hsl(var(--color-foreground))]">
-              Réseaux
+              {t("socialTitle")}
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a
-                  href="https://github.com/ahetansaid"
-                  target="_blank"
-                  rel="noopener"
-                  className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition"
-                >
+                <a href="https://github.com/ahetansaid" target="_blank" rel="noopener" className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition">
                   GitHub →
                 </a>
               </li>
               <li>
-                <a
-                  href="https://linkedin.com/in/mohamed-saïd-ahetan"
-                  target="_blank"
-                  rel="noopener"
-                  className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition"
-                >
+                <a href="https://linkedin.com/in/mohamed-saïd-ahetan" target="_blank" rel="noopener" className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition">
                   LinkedIn →
                 </a>
               </li>
               <li>
-                <a
-                  href="mailto:saidahetan@gmail.com"
-                  className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition"
-                >
-                  Email direct →
+                <a href="mailto:saidahetan@gmail.com" className="text-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-accent))] transition">
+                  Email →
                 </a>
               </li>
             </ul>
@@ -106,7 +98,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-[hsl(var(--color-surface-muted))] pt-6 text-center text-xs text-[hsl(var(--color-muted))]">
-          © {year} Mohamed Saïd AHETAN. Tous droits réservés.
+          © {year} Mohamed Saïd AHETAN. {t("rights")}
         </div>
       </div>
     </footer>

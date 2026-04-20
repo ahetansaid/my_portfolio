@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { AvailabilityBanner } from "@/components/ui/AvailabilityBanner";
 import { CurrentlyBuilding } from "@/components/ui/CurrentlyBuilding";
 import { StatsGrid } from "@/components/ui/StatsGrid";
@@ -15,6 +16,7 @@ const STACK_ITEMS = [
 ];
 
 export function HomeHero() {
+  const t = useTranslations("home");
   return (
     <section className="relative overflow-hidden">
       {/* Background glow */}
@@ -43,16 +45,16 @@ export function HomeHero() {
                 transition={{ duration: 1.8, repeat: Infinity }}
                 className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--color-electric))]"
               />
-              Systems Builder · Cotonou
+              {t("badge")}
             </motion.div>
 
             <motion.h1
               variants={fadeUp}
               className="font-display text-[2.75rem] font-extrabold leading-[1] tracking-tight text-[hsl(var(--color-foreground))] sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[5.5rem]"
             >
-              Je ship des{" "}
+              {t("titlePrefix")}{" "}
               <span className="relative inline-block">
-                <span className="text-gradient">systèmes</span>
+                <span className="text-gradient">{t("titleHighlight")}</span>
                 <motion.span
                   aria-hidden
                   initial={{ scaleX: 0 }}
@@ -62,29 +64,31 @@ export function HomeHero() {
                 />
               </span>
               <br className="hidden sm:block" />
-              {" qui "}
-              <span className="italic font-light text-[hsl(var(--color-muted))]">tournent</span>{" "}
-              en prod.
+              {" " + t("titleMiddle") + " "}
+              <span className="italic font-light text-[hsl(var(--color-muted))]">{t("titleItalic")}</span>{" "}
+              {t("titleSuffix")}
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
               className="mt-8 max-w-xl text-lg leading-relaxed text-[hsl(var(--color-muted))]"
             >
-              Intégrateur SI & full-stack. Je livre des SaaS, ERP et GED qui{" "}
+              {t("description1")}{" "}
               <strong className="text-[hsl(var(--color-foreground))]">
-                résistent à la vraie vie
+                {t("descriptionStrong")}
               </strong>
-              {" "}— pas à un <span className="line-through opacity-60">démo parfaite</span>.
+              {" " + t("description2") + " "}
+              <span className="line-through opacity-60">{t("descriptionStrike")}</span>
+              {t("description3")}
             </motion.p>
 
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap gap-4">
               <Link href="/booking" className="btn-cta group">
-                <span>Parlons de votre projet</span>
+                <span>{t("ctaPrimary")}</span>
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
               <Link href="/projects" className="btn-outline">
-                Voir les réalisations
+                {t("ctaSecondary")}
               </Link>
             </motion.div>
 
@@ -94,13 +98,13 @@ export function HomeHero() {
               className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-[hsl(var(--color-muted))]"
             >
               <span className="flex items-center gap-1.5">
-                <span className="text-[hsl(var(--color-electric))]">●</span> 10+ SaaS livrés
+                <span className="text-[hsl(var(--color-electric))]">●</span> {t("proof1")}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-[hsl(var(--color-accent-warm))]">●</span> 0 projet abandonné
+                <span className="text-[hsl(var(--color-accent-warm))]">●</span> {t("proof2")}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-[hsl(var(--color-accent))]">●</span> Open for 2026
+                <span className="text-[hsl(var(--color-accent))]">●</span> {t("proof3")}
               </span>
             </motion.div>
           </motion.div>
@@ -180,7 +184,7 @@ export function HomeHero() {
           transition={{ delay: 1.5, duration: 0.5 }}
           className="mt-16 flex flex-col items-center gap-2 text-xs uppercase tracking-widest text-[hsl(var(--color-muted))]"
         >
-          <span>Scroll</span>
+          <span>{t("scrollHint")}</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}

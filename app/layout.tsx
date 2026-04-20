@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Syne } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
@@ -17,14 +19,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Mohamed Saïd AHETAN — Intégrateur SI & Dev Full-Stack",
+    default: "Mohamed Saïd AHETAN — Full Stack & Systems Integrator",
     template: "%s · Mohamed Saïd AHETAN",
   },
   description:
-    "Je construis des systèmes métier qui ne cassent pas : SaaS, ERP, GED, gestion de flotte. 10+ projets livrés pour des organisations en production.",
+    "I build business systems that don't break: SaaS, ERP, document management, fleet management. 10+ projects shipped to production.",
   keywords: [
-    "intégrateur système",
-    "développeur full-stack",
+    "systems integrator",
+    "full-stack developer",
     "Next.js",
     "ERP",
     "GED",
@@ -32,22 +34,23 @@ export const metadata: Metadata = {
     "SaaS",
     "Afrique francophone",
     "consultant tech",
+    "intégrateur système",
+    "développeur full-stack",
   ],
   authors: [{ name: "Mohamed Saïd AHETAN" }],
   creator: "Mohamed Saïd AHETAN",
   openGraph: {
     type: "website",
-    locale: "fr_FR",
     url: BASE_URL,
-    title: "Mohamed Saïd AHETAN — Intégrateur SI & Dev Full-Stack",
+    title: "Mohamed Saïd AHETAN — Full Stack & Systems Integrator",
     description:
-      "Je construis des systèmes métier qui ne cassent pas : SaaS, ERP, GED, gestion de flotte. 10+ projets livrés.",
+      "I build business systems that don't break: SaaS, ERP, document management, fleet management. 10+ projects shipped.",
     siteName: "Mohamed Saïd AHETAN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mohamed Saïd AHETAN — Intégrateur SI",
-    description: "10+ projets SaaS livrés. Ils tournent en production.",
+    title: "Mohamed Saïd AHETAN — Systems Builder",
+    description: "10+ SaaS shipped. They run in production.",
   },
   robots: {
     index: true,
@@ -56,19 +59,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
-      lang="fr"
+      lang={locale}
       className={`${GeistSans.variable} ${GeistMono.variable} ${syne.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen flex flex-col font-sans antialiased text-[hsl(var(--color-foreground))] bg-[hsl(var(--color-surface))]">
-        <ThemeProvider>{children}</ThemeProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

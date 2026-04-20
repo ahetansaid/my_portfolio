@@ -4,21 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AvailabilityBanner } from "@/components/ui/AvailabilityBanner";
+import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 
-const links = [
-  { href: "/", label: "Accueil", num: "01" },
-  { href: "/projects", label: "Projets", num: "02" },
-  { href: "/playground", label: "Playground", num: "03" },
-  { href: "/services", label: "Services", num: "04" },
-  { href: "/about", label: "À propos", num: "05" },
-  { href: "/recruiter", label: "Recruteurs", num: "06" },
-  { href: "/contact", label: "Contact", num: "07" },
-];
+const LINKS = [
+  { href: "/", key: "home", num: "01" },
+  { href: "/projects", key: "projects", num: "02" },
+  { href: "/playground", key: "playground", num: "03" },
+  { href: "/services", key: "services", num: "04" },
+  { href: "/about", key: "about", num: "05" },
+  { href: "/recruiter", key: "recruiter", num: "06" },
+  { href: "/contact", key: "contact", num: "07" },
+] as const;
 
 export function Nav() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -81,14 +84,17 @@ export function Nav() {
                 AHETAN
               </div>
               <div className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-white/50">
-                Systems Builder
+                {t("role")}
               </div>
             </div>
           </Link>
 
           {/* RIGHT ACTIONS */}
-          <div className="flex items-center gap-3">
-            {/* Desktop: "Prendre RDV" quick CTA */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Locale switcher */}
+            <LocaleSwitcher variant="dark" />
+
+            {/* Desktop: "Book a call" quick CTA */}
             <Link
               href="/booking"
               className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--color-electric))]/50 bg-[hsl(var(--color-electric))]/10 px-4 py-2 text-xs font-bold text-[hsl(var(--color-electric))] transition-all hover:bg-[hsl(var(--color-electric))] hover:text-[hsl(var(--color-electric-foreground))] hover:shadow-[0_0_24px_rgba(163,230,53,0.6)]"
@@ -98,18 +104,18 @@ export function Nav() {
                 transition={{ duration: 1.6, repeat: Infinity }}
                 className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--color-electric))]"
               />
-              Prendre RDV
+              {t("booking")}
             </Link>
 
             {/* TOGGLE — ouvre le sidebar */}
             <button
               type="button"
               onClick={() => setOpen(true)}
-              aria-label="Ouvrir le menu"
+              aria-label={t("openMenu")}
               className="group relative flex h-11 items-center gap-2.5 rounded-full border border-white/15 bg-white/5 pl-4 pr-3 transition-all hover:border-[hsl(var(--color-electric))]/50 hover:bg-[hsl(var(--color-electric))]/10"
             >
               <span className="hidden text-xs font-bold uppercase tracking-wider text-white/80 group-hover:text-[hsl(var(--color-electric))] sm:inline">
-                Menu
+                {t("menu")}
               </span>
               <div className="flex h-7 w-7 flex-col items-center justify-center gap-[5px] rounded-full bg-white/10 group-hover:bg-[hsl(var(--color-electric))]/20">
                 <span className="block h-[2px] w-3.5 rounded bg-white transition-all group-hover:bg-[hsl(var(--color-electric))] group-hover:w-4" />
@@ -159,13 +165,13 @@ export function Nav() {
                       AHETAN
                     </div>
                     <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/50">
-                      Systems Builder
+                      {t("role")}
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  aria-label="Fermer le menu"
+                  aria-label={t("closeMenu")}
                   className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-[hsl(var(--color-electric))]/50 hover:bg-[hsl(var(--color-electric))]/10"
                 >
                   <svg
@@ -196,7 +202,7 @@ export function Nav() {
                 </div>
 
                 <ul className="space-y-1">
-                  {links.map((link, i) => {
+                  {LINKS.map((link, i) => {
                     const active =
                       link.href === "/"
                         ? pathname === "/"
@@ -235,7 +241,7 @@ export function Nav() {
                                 : "text-white/70 group-hover:text-white"
                             }`}
                           >
-                            {link.label}
+                            {t(link.key)}
                           </span>
 
                           {/* Arrow */}
@@ -272,7 +278,7 @@ export function Nav() {
                     >
                       ⚡
                     </motion.span>
-                    Prendre un rendez-vous
+                    {t("booking")}
                     <span className="transition group-hover:translate-x-1">→</span>
                   </Link>
                 </motion.div>
