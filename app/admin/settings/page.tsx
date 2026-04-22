@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { api, ApiError } from "@/lib/api-client";
+import { useToast } from "@/components/admin/Toaster";
 
 const inputClass =
   "w-full rounded-lg border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] px-3 py-2 text-sm text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted))] focus:border-[hsl(var(--color-accent))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/20";
 
 export default function AdminSettingsPage() {
+  const toast = useToast();
   const [availability, setAvailability] = useState({
     status: "available" as "available" | "on_mission" | "unavailable",
     message: "",
@@ -18,68 +21,101 @@ export default function AdminSettingsPage() {
     clientsServed: 0,
     currentlyBuilding: "",
   });
-  const [savedA, setSavedA] = useState(false);
-  const [savedS, setSavedS] = useState(false);
+  const [savingA, setSavingA] = useState(false);
+  const [savingS, setSavingS] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const [a, s] = await Promise.all([
-        fetch("/api/availability").then((r) => r.json()),
-        fetch("/api/stats").then((r) => r.json()),
-      ]);
-      setAvailability({
-        status: a.status ?? "available",
-        message: a.message ?? "",
-        nextAvailableDate: a.nextAvailableDate ? a.nextAvailableDate.split("T")[0] : "",
-      });
-      setStats({
-        projectsShipped: s.projectsShipped ?? 0,
-        yearsExperience: s.yearsExperience ?? 0,
-        domainsCovered: s.domainsCovered ?? 0,
-        clientsServed: s.clientsServed ?? 0,
-        currentlyBuilding: s.currentlyBuilding ?? "",
-      });
+      try {
+        const [a, s] = await Promise.all([
+          api.get<{
+            status?: string;
+            message?: string | null;
+            nextAvailableDate?: string | null;
+          }>("/api/availability", { redirectOn401: false }),
+          api.get<{
+            projectsShipped?: number;
+            yearsExperience?: number;
+            domainsCovered?: number;
+            clientsServed?: number;
+            currentlyBuilding?: string | null;
+          }>("/api/stats", { redirectOn401: false }),
+        ]);
+        setAvailability({
+          status: (a?.status as "available" | "on_mission" | "unavailable") ?? "available",
+          message: a?.message ?? "",
+          nextAvailableDate: a?.nextAvailableDate
+            ? String(a.nextAvailableDate).split("T")[0]
+            : "",
+        });
+        setStats({
+          projectsShipped: s?.projectsShipped ?? 0,
+          yearsExperience: s?.yearsExperience ?? 0,
+          domainsCovered: s?.domainsCovered ?? 0,
+          clientsServed: s?.clientsServed ?? 0,
+          currentlyBuilding: s?.currentlyBuilding ?? "",
+        });
+      } catch {
+        // silent
+      }
     })();
   }, []);
 
   const saveAvailability = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/availability", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(availability),
-    });
-    setSavedA(true);
-    setTimeout(() => setSavedA(false), 2000);
+    setSavingA(true);
+    try {
+      await api.put("/api/availability", availability);
+      toast.success("Disponibilité enregistrée.");
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Erreur lors de l'enregistrement.");
+    } finally {
+      setSavingA(false);
+    }
   };
 
   const saveStats = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/stats", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(stats),
-    });
-    setSavedS(true);
-    setTimeout(() => setSavedS(false), 2000);
+    setSavingS(true);
+    try {
+      await api.put("/api/stats", stats);
+      toast.success("Chiffres enregistrés.");
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Erreur lors de l'enregistrement.");
+    } finally {
+      setSavingS(false);
+    }
   };
 
   return (
     <div className="space-y-8">
-      <h1 className="font-display text-2xl font-bold text-[hsl(var(--color-foreground))]">Paramètres du site</h1>
+      <div>
+        <h1 className="font-display text-2xl font-bold text-[hsl(var(--color-foreground))]">
+          Paramètres du site
+        </h1>
+        <p className="mt-1 text-sm text-[hsl(var(--color-muted))]">
+          Disponibilité publique et chiffres affichés sur la home.
+        </p>
+      </div>
 
-      {/* AVAILABILITY */}
       <div className="rounded-xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm">
         <h2 className="font-display text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
           Statut de disponibilité
         </h2>
         <form onSubmit={saveAvailability} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Statut</label>
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              Statut
+            </label>
             <select
               className={inputClass}
               value={availability.status}
-              onChange={(e) => setAvailability({ ...availability, status: e.target.value as typeof availability.status })}
+              onChange={(e) =>
+                setAvailability({
+                  ...availability,
+                  status: e.target.value as typeof availability.status,
+                })
+              }
             >
               <option value="available">🟢 Disponible</option>
               <option value="on_mission">🟡 En mission (ouvert à discussion)</option>
@@ -87,7 +123,9 @@ export default function AdminSettingsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Message affiché</label>
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              Message affiché
+            </label>
             <input
               className={inputClass}
               placeholder="Disponible pour une nouvelle mission dès mai 2026"
@@ -103,25 +141,26 @@ export default function AdminSettingsPage() {
               className={inputClass}
               type="date"
               value={availability.nextAvailableDate}
-              onChange={(e) => setAvailability({ ...availability, nextAvailableDate: e.target.value })}
+              onChange={(e) =>
+                setAvailability({ ...availability, nextAvailableDate: e.target.value })
+              }
             />
           </div>
-          <div className="flex items-center gap-3">
+          <div>
             <button
               type="submit"
-              className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 transition"
+              disabled={savingA}
+              className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-semibold text-[hsl(var(--color-accent-warm-foreground))] shadow-sm transition hover:opacity-90 disabled:opacity-60"
             >
-              Enregistrer
+              {savingA ? "Enregistrement…" : "Enregistrer"}
             </button>
-            {savedA && <span className="text-sm text-green-600">✓ Enregistré</span>}
           </div>
         </form>
       </div>
 
-      {/* STATS */}
       <div className="rounded-xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm">
         <h2 className="font-display text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
-          Chiffres clés & statut live
+          Chiffres clés &amp; statut live
         </h2>
         <form onSubmit={saveStats} className="space-y-4">
           <div>
@@ -140,25 +179,35 @@ export default function AdminSettingsPage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Projets livrés</label>
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                Projets livrés
+              </label>
               <input
                 className={inputClass}
                 type="number"
                 value={stats.projectsShipped}
-                onChange={(e) => setStats({ ...stats, projectsShipped: Number(e.target.value) })}
+                onChange={(e) =>
+                  setStats({ ...stats, projectsShipped: Number(e.target.value) })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Années d&apos;expérience</label>
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                Années d&apos;expérience
+              </label>
               <input
                 className={inputClass}
                 type="number"
                 value={stats.yearsExperience}
-                onChange={(e) => setStats({ ...stats, yearsExperience: Number(e.target.value) })}
+                onChange={(e) =>
+                  setStats({ ...stats, yearsExperience: Number(e.target.value) })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Domaines couverts</label>
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                Domaines couverts
+              </label>
               <input
                 className={inputClass}
                 type="number"
@@ -167,7 +216,9 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Clients servis</label>
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                Clients servis
+              </label>
               <input
                 className={inputClass}
                 type="number"
@@ -176,14 +227,14 @@ export default function AdminSettingsPage() {
               />
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div>
             <button
               type="submit"
-              className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 transition"
+              disabled={savingS}
+              className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-semibold text-[hsl(var(--color-accent-warm-foreground))] shadow-sm transition hover:opacity-90 disabled:opacity-60"
             >
-              Enregistrer
+              {savingS ? "Enregistrement…" : "Enregistrer"}
             </button>
-            {savedS && <span className="text-sm text-green-600">✓ Enregistré</span>}
           </div>
         </form>
       </div>

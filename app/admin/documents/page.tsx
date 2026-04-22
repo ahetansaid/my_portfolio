@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { api, ApiError } from "@/lib/api-client";
+import { useToast } from "@/components/admin/Toaster";
 
 type Document = {
   id: number;
@@ -34,14 +36,17 @@ function formatDate(iso: string) {
 }
 
 export default function AdminDocumentsPage() {
+  const toast = useToast();
   const [docs, setDocs] = useState<Document[]>([]);
   const [loadingType, setLoadingType] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
 
   const load = async () => {
-    const res = await fetch("/api/admin/documents");
-    if (res.ok) setDocs(await res.json());
+    try {
+      const data = await api.get<Document[]>("/api/admin/documents");
+      setDocs(Array.isArray(data) ? data : []);
+    } catch {
+      setDocs([]);
+    }
   };
 
   useEffect(() => {
@@ -50,35 +55,24 @@ export default function AdminDocumentsPage() {
 
   const handleUpload = async (type: string, file: File) => {
     setLoadingType(type);
-    setError(null);
-    setMessage(null);
 
     try {
       if (file.type !== "application/pdf") {
-        throw new Error("Le fichier doit être au format PDF.");
+        throw new ApiError("Le fichier doit être au format PDF.", 400);
       }
       if (file.size > 5 * 1024 * 1024) {
-        throw new Error("Le fichier dépasse 5 MB.");
+        throw new ApiError("Le fichier dépasse 5 MB.", 400);
       }
 
       const formData = new FormData();
       formData.append("type", type);
       formData.append("file", file);
 
-      const res = await fetch("/api/admin/documents", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Erreur lors de l'upload.");
-      }
-
-      setMessage(`✓ ${type.toUpperCase()} mis à jour avec succès.`);
+      await api.post("/api/admin/documents", formData);
+      toast.success(`${type.toUpperCase()} mis à jour.`);
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur inconnue.");
+      toast.error(err instanceof ApiError ? err.message : "Erreur lors de l'upload.");
     } finally {
       setLoadingType(null);
     }
@@ -87,16 +81,13 @@ export default function AdminDocumentsPage() {
   const handleDelete = async (type: string) => {
     if (!confirm(`Supprimer le document ${type.toUpperCase()} ?`)) return;
     setLoadingType(type);
-    setError(null);
-    setMessage(null);
 
     try {
-      const res = await fetch(`/api/admin/documents/${type}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Erreur lors de la suppression.");
-      setMessage(`✓ ${type.toUpperCase()} supprimé.`);
+      await api.delete(`/api/admin/documents/${type}`);
+      toast.success(`${type.toUpperCase()} supprimé.`);
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur");
+      toast.error(err instanceof ApiError ? err.message : "Erreur lors de la suppression.");
     } finally {
       setLoadingType(null);
     }
@@ -109,21 +100,10 @@ export default function AdminDocumentsPage() {
           Documents
         </h1>
         <p className="mt-1 text-sm text-[hsl(var(--color-muted))]">
-          Upload et gestion des fichiers PDF (CV FR + EN). Max 5 MB par fichier. Stockés en base
-          de données.
+          Upload et gestion des fichiers PDF (CV FR + EN). Max 5 MB par fichier. Stockés en base de
+          données.
         </p>
       </div>
-
-      {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
-      {message && (
-        <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-          {message}
-        </div>
-      )}
 
       <div className="grid gap-5 md:grid-cols-2">
         {SLOTS.map((slot) => {
@@ -144,11 +124,19 @@ export default function AdminDocumentsPage() {
       </div>
 
       <div className="mt-8 rounded-xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface-muted))]/40 p-5 text-xs text-[hsl(var(--color-muted))]">
-        <p className="mb-2 font-semibold text-[hsl(var(--color-foreground))]">ℹ️ Comment ça marche</p>
+        <p className="mb-2 font-semibold text-[hsl(var(--color-foreground))]">ℹ Comment ça marche</p>
         <ul className="space-y-1 list-disc list-inside">
           <li>Les fichiers PDF sont stockés directement dans la base PostgreSQL (Neon)</li>
-          <li>Accessible publiquement via <code className="rounded bg-[hsl(var(--color-surface))] px-1">/api/documents/cv-fr</code></li>
-          <li>La page publique <code className="rounded bg-[hsl(var(--color-surface))] px-1">/cv</code> détecte automatiquement les fichiers présents</li>
+          <li>
+            Accessible publiquement via{" "}
+            <code className="rounded bg-[hsl(var(--color-surface))] px-1">
+              /api/documents/cv-fr
+            </code>
+          </li>
+          <li>
+            La page publique <code className="rounded bg-[hsl(var(--color-surface))] px-1">/cv</code>{" "}
+            détecte automatiquement les fichiers présents
+          </li>
           <li>Remplace le PDF à tout moment — la page publique se met à jour immédiatement</li>
         </ul>
       </div>
@@ -190,8 +178,8 @@ function DocumentSlot({
           </p>
         </div>
         {doc && (
-          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             En ligne
           </span>
         )}
@@ -218,13 +206,13 @@ function DocumentSlot({
               href={`/api/documents/${slot.type}`}
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--color-accent))]/30 bg-[hsl(var(--color-accent))]/10 px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent))]/20 transition"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--color-accent))]/30 bg-[hsl(var(--color-accent))]/10 px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-accent))] transition hover:bg-[hsl(var(--color-accent))]/20"
             >
               👁 Consulter
             </a>
             <a
               href={`/api/documents/${slot.type}?download=1`}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--color-surface-muted))] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-surface-muted))] transition"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--color-surface-muted))] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-foreground))] transition hover:bg-[hsl(var(--color-surface-muted))]"
             >
               ⬇ Télécharger
             </a>
@@ -232,7 +220,7 @@ function DocumentSlot({
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--color-accent-warm))]/30 bg-[hsl(var(--color-accent-warm))]/10 px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-accent-warm))] hover:bg-[hsl(var(--color-accent-warm))]/20 transition disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[hsl(var(--color-accent-warm))]/30 bg-[hsl(var(--color-accent-warm))]/10 px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-accent-warm))] transition hover:bg-[hsl(var(--color-accent-warm))]/20 disabled:opacity-60"
             >
               🔄 Remplacer
             </button>
@@ -240,7 +228,7 @@ function DocumentSlot({
               type="button"
               onClick={() => onDelete(slot.type)}
               disabled={loading}
-              className="ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition disabled:opacity-60"
+              className="ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-60"
             >
               🗑 Supprimer
             </button>
@@ -269,7 +257,9 @@ function DocumentSlot({
           <div className="mt-2 text-sm font-semibold text-[hsl(var(--color-foreground))]">
             {loading ? "Upload en cours…" : "Déposer ou cliquer pour uploader"}
           </div>
-          <div className="mt-1 text-[11px] text-[hsl(var(--color-muted))]">PDF uniquement · max 5 MB</div>
+          <div className="mt-1 text-[11px] text-[hsl(var(--color-muted))]">
+            PDF uniquement · max 5 MB
+          </div>
         </label>
       )}
 

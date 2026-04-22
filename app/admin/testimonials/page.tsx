@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { api, ApiError } from "@/lib/api-client";
+import { useToast } from "@/components/admin/Toaster";
 
 type Testimonial = {
   id: number;
@@ -20,11 +22,11 @@ const inputClass =
   "w-full rounded-lg border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] px-3 py-2 text-sm text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted))] focus:border-[hsl(var(--color-accent))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/20";
 
 export default function AdminTestimonialsPage() {
+  const toast = useToast();
   const [items, setItems] = useState<Testimonial[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     authorName: "",
     authorRole: "",
@@ -38,8 +40,12 @@ export default function AdminTestimonialsPage() {
   });
 
   const load = async () => {
-    const res = await fetch("/api/testimonials?all=1");
-    if (res.ok) setItems(await res.json());
+    try {
+      const data = await api.get<Testimonial[]>("/api/testimonials?all=1", { redirectOn401: false });
+      setItems(Array.isArray(data) ? data : []);
+    } catch {
+      setItems([]);
+    }
   };
 
   useEffect(() => {
@@ -59,7 +65,6 @@ export default function AdminTestimonialsPage() {
       sortOrder: 0,
     });
     setEditingId(null);
-    setError(null);
   };
 
   const openNew = () => {
@@ -81,59 +86,65 @@ export default function AdminTestimonialsPage() {
     });
     setEditingId(t.id);
     setShowForm(true);
-    setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     try {
-      const url = editingId ? `/api/testimonials/${editingId}` : "/api/testimonials";
-      const method = editingId ? "PUT" : "POST";
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Erreur");
+      if (editingId) {
+        await api.put(`/api/testimonials/${editingId}`, form);
+        toast.success("Témoignage mis à jour.");
+      } else {
+        await api.post("/api/testimonials", form);
+        toast.success("Témoignage créé.");
       }
       await load();
       setShowForm(false);
       resetForm();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur");
+      toast.error(err instanceof ApiError ? err.message : "Erreur lors de l'enregistrement.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Supprimer ce témoignage ?")) return;
-    await fetch(`/api/testimonials/${id}`, { method: "DELETE" });
-    await load();
+  const handleDelete = async (id: number, author: string) => {
+    if (!confirm(`Supprimer le témoignage de ${author} ?`)) return;
+    try {
+      await api.delete(`/api/testimonials/${id}`);
+      toast.success("Témoignage supprimé.");
+      await load();
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Erreur lors de la suppression.");
+    }
   };
 
   const togglePublish = async (t: Testimonial) => {
-    await fetch(`/api/testimonials/${t.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...t, isPublished: !t.isPublished }),
-    });
-    await load();
+    try {
+      await api.put(`/api/testimonials/${t.id}`, { ...t, isPublished: !t.isPublished });
+      toast.success(t.isPublished ? "Dépublié." : "Publié.");
+      await load();
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Erreur.");
+    }
   };
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold text-[hsl(var(--color-foreground))]">
-          Témoignages
-        </h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-[hsl(var(--color-foreground))]">
+            Témoignages
+          </h1>
+          <p className="mt-1 text-sm text-[hsl(var(--color-muted))]">
+            {items.length} témoignage{items.length !== 1 ? "s" : ""} ·{" "}
+            {items.filter((t) => t.isPublished).length} publié(s)
+          </p>
+        </div>
         <button
           onClick={openNew}
-          className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 transition"
+          className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-semibold text-[hsl(var(--color-accent-warm-foreground))] shadow-sm transition hover:opacity-90"
         >
           + Nouveau témoignage
         </button>
@@ -147,7 +158,9 @@ export default function AdminTestimonialsPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Nom *</label>
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  Nom *
+                </label>
                 <input
                   className={inputClass}
                   required
@@ -156,7 +169,9 @@ export default function AdminTestimonialsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Rôle</label>
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  Rôle
+                </label>
                 <input
                   className={inputClass}
                   value={form.authorRole}
@@ -164,7 +179,9 @@ export default function AdminTestimonialsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Entreprise</label>
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  Entreprise
+                </label>
                 <input
                   className={inputClass}
                   value={form.authorCompany}
@@ -172,7 +189,9 @@ export default function AdminTestimonialsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">LinkedIn URL</label>
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  LinkedIn URL
+                </label>
                 <input
                   className={inputClass}
                   type="url"
@@ -182,7 +201,9 @@ export default function AdminTestimonialsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Avatar URL</label>
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                Avatar URL
+              </label>
               <input
                 className={inputClass}
                 type="url"
@@ -192,7 +213,9 @@ export default function AdminTestimonialsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Contenu *</label>
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                Contenu *
+              </label>
               <textarea
                 className={inputClass}
                 rows={4}
@@ -203,7 +226,9 @@ export default function AdminTestimonialsPage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
               <div>
-                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Note (1-5)</label>
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  Note (1-5)
+                </label>
                 <input
                   className={inputClass}
                   type="number"
@@ -214,7 +239,9 @@ export default function AdminTestimonialsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">Ordre</label>
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  Ordre
+                </label>
                 <input
                   className={inputClass}
                   type="number"
@@ -232,13 +259,11 @@ export default function AdminTestimonialsPage() {
               </label>
             </div>
 
-            {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
-
             <div className="flex gap-3">
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] hover:opacity-90 disabled:opacity-60 transition"
+                className="rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-2 text-sm font-semibold text-[hsl(var(--color-accent-warm-foreground))] shadow-sm transition hover:opacity-90 disabled:opacity-60"
               >
                 {loading ? "Enregistrement…" : "Enregistrer"}
               </button>
@@ -248,7 +273,7 @@ export default function AdminTestimonialsPage() {
                   setShowForm(false);
                   resetForm();
                 }}
-                className="rounded-lg border border-[hsl(var(--color-surface-muted))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-surface-muted))] transition"
+                className="rounded-lg border border-[hsl(var(--color-surface-muted))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-muted))] transition hover:bg-[hsl(var(--color-surface-muted))]"
               >
                 Annuler
               </button>
@@ -258,6 +283,13 @@ export default function AdminTestimonialsPage() {
       )}
 
       <div className="grid gap-4">
+        {items.length === 0 && (
+          <div className="rounded-xl border border-dashed border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-8 text-center">
+            <p className="text-sm text-[hsl(var(--color-muted))]">
+              Aucun témoignage. Cliquez sur « + Nouveau témoignage » pour commencer.
+            </p>
+          </div>
+        )}
         {items.map((t) => (
           <div
             key={t.id}
@@ -265,8 +297,10 @@ export default function AdminTestimonialsPage() {
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold text-[hsl(var(--color-foreground))]">{t.authorName}</span>
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <span className="font-semibold text-[hsl(var(--color-foreground))]">
+                    {t.authorName}
+                  </span>
                   {t.authorRole && (
                     <span className="text-sm text-[hsl(var(--color-muted))]">
                       · {t.authorRole}
@@ -282,21 +316,21 @@ export default function AdminTestimonialsPage() {
                   onClick={() => togglePublish(t)}
                   className={`rounded-full px-3 py-1 text-xs font-medium transition ${
                     t.isPublished
-                      ? "bg-green-100 text-green-700 hover:bg-green-200"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                      : "bg-[hsl(var(--color-surface-muted))] text-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-surface-muted))]/80"
                   }`}
                 >
                   {t.isPublished ? "✓ Publié" : "⏸ Brouillon"}
                 </button>
                 <button
                   onClick={() => openEdit(t)}
-                  className="rounded-lg border border-[hsl(var(--color-surface-muted))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-surface-muted))] transition"
+                  className="rounded-lg border border-[hsl(var(--color-surface-muted))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-muted))] transition hover:bg-[hsl(var(--color-surface-muted))]"
                 >
                   Modifier
                 </button>
                 <button
-                  onClick={() => handleDelete(t.id)}
-                  className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition"
+                  onClick={() => handleDelete(t.id, t.authorName)}
+                  className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50"
                 >
                   Supprimer
                 </button>
@@ -304,11 +338,6 @@ export default function AdminTestimonialsPage() {
             </div>
           </div>
         ))}
-        {items.length === 0 && (
-          <p className="text-center text-sm text-[hsl(var(--color-muted))] py-12">
-            Aucun témoignage. Cliquez sur « + Nouveau témoignage » pour commencer.
-          </p>
-        )}
       </div>
     </div>
   );
