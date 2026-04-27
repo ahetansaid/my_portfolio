@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Availability = {
   status: "available" | "on_mission" | "unavailable";
@@ -10,12 +11,13 @@ type Availability = {
 };
 
 const config = {
-  available: { dot: "bg-green-500", label: "Disponible", ring: "ring-green-500/20" },
-  on_mission: { dot: "bg-yellow-500", label: "En mission", ring: "ring-yellow-500/20" },
-  unavailable: { dot: "bg-red-500", label: "Indisponible", ring: "ring-red-500/20" },
+  available: { dot: "bg-green-500", labelKey: "available" as const, ring: "ring-green-500/20" },
+  on_mission: { dot: "bg-yellow-500", labelKey: "onMission" as const, ring: "ring-yellow-500/20" },
+  unavailable: { dot: "bg-red-500", labelKey: "unavailable" as const, ring: "ring-red-500/20" },
 };
 
 export function AvailabilityBanner() {
+  const t = useTranslations("availability");
   const [data, setData] = useState<Availability | null>(null);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export function AvailabilityBanner() {
         <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${c.dot} opacity-75`} />
         <span className={`relative inline-flex h-2 w-2 rounded-full ${c.dot}`} />
       </span>
-      <span className="font-semibold">{c.label}</span>
+      <span className="font-semibold">{t(c.labelKey)}</span>
       {data.message && <span className="text-[hsl(var(--color-muted))]">· {data.message}</span>}
     </motion.div>
   );

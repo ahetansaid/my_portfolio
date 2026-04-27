@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 const inputClass =
   "mt-1 block w-full rounded-lg border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] px-3 py-2 text-sm text-[hsl(var(--color-foreground))] shadow-sm placeholder:text-[hsl(var(--color-muted))] focus:border-[hsl(var(--color-accent))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/20";
 
 export default function ContactPage() {
+  const t = useTranslations("contactPage");
+  const tCommon = useTranslations("common");
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -26,7 +29,7 @@ export default function ContactPage() {
       setForm({ name: "", email: "", subject: "", message: "" });
     } else {
       const data = await res.json();
-      setErrorMsg(data.error ?? "Une erreur est survenue.");
+      setErrorMsg(data.error ?? tCommon("error"));
       setStatus("error");
     }
   }
@@ -38,11 +41,10 @@ export default function ContactPage() {
           {/* Left col */}
           <div>
             <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-[hsl(var(--color-foreground))]">
-              Contact
+              {t("title")}
             </h1>
             <p className="mt-4 text-[hsl(var(--color-muted))] leading-relaxed">
-              Un projet, une question ou une opportunité de collaboration ?
-              N'hésitez pas à me contacter.
+              {t("description")}
             </p>
 
             <div className="mt-8 space-y-4">
@@ -52,9 +54,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-[hsl(var(--color-muted))] uppercase tracking-wide">Email</p>
-                  <a href="mailto:contact@exemple.com"
+                  <a href="mailto:saidahetan@gmail.com"
                     className="text-sm font-medium text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-accent))] transition">
-                    contact@exemple.com
+                    saidahetan@gmail.com
                   </a>
                 </div>
               </div>
@@ -64,9 +66,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-[hsl(var(--color-muted))] uppercase tracking-wide">LinkedIn</p>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+                  <a href="https://linkedin.com/in/mohamed-saïd-ahetan" target="_blank" rel="noopener noreferrer"
                     className="text-sm font-medium text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-accent))] transition">
-                    linkedin.com/in/votre-profil
+                    @mohamed-saïd-ahetan
                   </a>
                 </div>
               </div>
@@ -76,9 +78,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-[hsl(var(--color-muted))] uppercase tracking-wide">GitHub</p>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                  <a href="https://github.com/ahetansaid" target="_blank" rel="noopener noreferrer"
                     className="text-sm font-medium text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-accent))] transition">
-                    github.com/votre-profil
+                    @ahetansaid
                   </a>
                 </div>
               </div>
@@ -91,16 +93,16 @@ export default function ContactPage() {
               <div className="flex flex-col items-center justify-center h-full py-8 text-center">
                 <div className="text-4xl mb-3">✅</div>
                 <h2 className="font-display text-lg font-semibold text-[hsl(var(--color-foreground))]">
-                  Message envoyé !
+                  {t("successTitle")}
                 </h2>
                 <p className="mt-2 text-sm text-[hsl(var(--color-muted))]">
-                  Merci, je vous répondrai dans les meilleurs délais.
+                  {t("successMessage")}
                 </p>
                 <button
                   onClick={() => setStatus("idle")}
                   className="mt-6 rounded-lg border border-[hsl(var(--color-surface-muted))] px-4 py-2 text-sm text-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-surface-muted))] transition"
                 >
-                  Envoyer un autre message
+                  {t("sendAnother")}
                 </button>
               </div>
             ) : (
@@ -108,34 +110,34 @@ export default function ContactPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
-                      Nom *
+                      {t("labelName")} *
                     </label>
-                    <input id="name" type="text" required placeholder="Jean Dupont"
+                    <input id="name" type="text" required placeholder={t("placeholderName")}
                       className={inputClass} value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })} />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
-                      Email *
+                      {t("labelEmail")} *
                     </label>
-                    <input id="email" type="email" required placeholder="jean@exemple.com"
+                    <input id="email" type="email" required placeholder={t("placeholderEmail")}
                       className={inputClass} value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })} />
                   </div>
                 </div>
                 <div>
                   <label htmlFor="subject" className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
-                    Sujet
+                    {t("labelSubject")}
                   </label>
-                  <input id="subject" type="text" placeholder="Projet, collaboration…"
+                  <input id="subject" type="text" placeholder={t("placeholderSubject")}
                     className={inputClass} value={form.subject}
                     onChange={(e) => setForm({ ...form, subject: e.target.value })} />
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
-                    Message *
+                    {t("labelMessage")} *
                   </label>
-                  <textarea id="message" rows={5} required placeholder="Décrivez votre besoin…"
+                  <textarea id="message" rows={5} required placeholder={t("placeholderMessage")}
                     className={inputClass} value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })} />
                 </div>
@@ -148,7 +150,7 @@ export default function ContactPage() {
 
                 <button type="submit" disabled={status === "loading"}
                   className="w-full rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-3 text-sm font-medium text-[hsl(var(--color-accent-warm-foreground))] shadow-sm transition hover:opacity-90 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent-warm))] focus:ring-offset-2">
-                  {status === "loading" ? "Envoi en cours…" : "Envoyer le message"}
+                  {status === "loading" ? t("submitting") : t("submit")}
                 </button>
               </form>
             )}

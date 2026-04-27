@@ -151,7 +151,7 @@
     "badge": "Processus · 4 étapes",
     "title": "Comment je travaille.",
     "subtitle": "Transparent, itératif, sans mystère. Vous savez toujours où on en est, et à quel horizon la prochaine étape arrive.",
-    "step1Label": "Étape",
+    "stepLabel": "Étape",
     "step1Title": "Discovery call",
     "step1Duration": "30 min · gratuit",
     "step1Description": "On discute de votre contexte, vos contraintes, vos objectifs. Je vous dis franchement si je peux vous aider ou pas.",
@@ -179,20 +179,67 @@
     "contactEmail": "Email",
     "contactPhone": "Téléphone",
     "contactLocation": "Localisation",
+    "contactLocationValue": "Cotonou, Bénin",
     "contactLinkedin": "LinkedIn",
     "contactGithub": "GitHub",
     "journeyBadge": "01 · Parcours",
     "journeyTitle": "D'où je viens, où je vais.",
     "formationsBadge": "02 · Formations",
     "formationsTitle": "Apprendre, toujours.",
+    "formations": {
+      "epitech": {
+        "year": "2024 — présent",
+        "school": "Epitech Bénin",
+        "degree": "Coding Academy — Développeur Full Stack",
+        "detail": "Formation intensive par projet. Next.js, React, TypeScript, architectures scalables, DevOps."
+      },
+      "esep": {
+        "year": "2021 — 2024",
+        "school": "ESEP — Le Berger",
+        "degree": "Licence Pro Systèmes Informatiques & Logiciels",
+        "detail": "Génie logiciel, bases de données, développement web. Premiers projets en PHP/Laravel/MySQL."
+      },
+      "ceg": {
+        "year": "2019 — 2020",
+        "school": "CEG Akpakpa-Centre",
+        "degree": "Baccalauréat Série C (Sciences & Techniques)",
+        "detail": "Bac scientifique — maths, physique, biologie."
+      }
+    },
     "certsBadge": "03 · Certifications & Distinctions",
     "certsTitle": "Ce que j'ai validé.",
+    "certificates": {
+      "blockchain": "Lauréat Défi des Innovateurs Blockchain",
+      "marketing": "Marketing Numérique",
+      "communication": "Communication sur Internet",
+      "hardware": "Computer Hardware Basics",
+      "cyber": "Introduction to Cybersecurity",
+      "ai": "IA & Métaheuristiques / Programmation par contraintes",
+      "cybersecUni": "Cybersécurité en milieu universitaire"
+    },
     "languagesBadge": "04 · Langues",
     "languagesTitle": "Je parle.",
+    "languages": {
+      "french": "Français",
+      "yoruba": "Yoruba",
+      "english": "Anglais",
+      "fluent": "Courant",
+      "intermediate": "Intermédiaire"
+    },
     "valuesBadge": "05 · Valeurs",
     "valuesTitle": "Ce qui guide mon travail.",
     "interestsBadge": "06 · Hors du code",
     "interestsTitle": "Ce que je suis aussi.",
+    "interests": {
+      "volunteer": "Bénévole",
+      "volunteerDetail": "Turritopsis AISBL",
+      "running": "Footing",
+      "football": "Football",
+      "drawing": "Dessin architectural",
+      "art": "Art",
+      "cooking": "Cuisine",
+      "traditions": "Traditions"
+    },
     "finalCtaTitle": "Prêt à construire quelque chose ensemble ?",
     "finalCtaSubtitle": "30 minutes suffisent pour cadrer un projet. Gratuit, sans engagement, direct.",
     "finalCtaPrimary": "📅 Réserver 30 min",
@@ -223,6 +270,7 @@
     "duration60": "1 heure",
     "submit": "📅 Envoyer ma demande",
     "submitting": "Envoi…",
+    "errorPrefix": "Erreur d'envoi",
     "disclaimer": "Je reviens vers vous sous 24h avec une proposition de créneau ferme.",
     "successTitle": "Demande envoyée !",
     "successMessage": "Merci. Je reviens vers vous dans les 24h pour confirmer un créneau et vous envoyer une invitation calendrier."
@@ -263,6 +311,12 @@
     "code": "⚡ Code",
     "empty": "Aucune expérience publique pour l'instant."
   },
+  "skillsPage": {
+    "title": "Compétences",
+    "description": "Un profil transverse — du développement à l'intégration système — pour couvrir l'ensemble du cycle de vie d'une solution technique.",
+    "emptyItems": "Aucun élément.",
+    "emptyCategories": "Compétences à définir dans le backoffice."
+  },
   "cvPage": {
     "badge": "Curriculum Vitae",
     "title": "Mon CV complet",
@@ -281,14 +335,20 @@
   },
   "contactPage": {
     "title": "Contact",
-    "description": "Une question, un projet, une collaboration ? Écrivez-moi.",
+    "description": "Un projet, une question ou une opportunité de collaboration ? N'hésitez pas à me contacter.",
     "labelName": "Nom",
+    "placeholderName": "Jean Dupont",
     "labelEmail": "Email",
+    "placeholderEmail": "jean@exemple.com",
     "labelSubject": "Sujet",
+    "placeholderSubject": "Projet, collaboration…",
     "labelMessage": "Message",
+    "placeholderMessage": "Décrivez votre besoin…",
     "submit": "Envoyer le message",
     "submitting": "Envoi en cours…",
-    "success": "Message envoyé ! Je reviens vers vous rapidement."
+    "successTitle": "Message envoyé !",
+    "successMessage": "Merci, je vous répondrai dans les meilleurs délais.",
+    "sendAnother": "Envoyer un autre message"
   },
   "magicChat": {
     "buttonLabel": "Demander à l'IA",

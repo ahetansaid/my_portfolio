@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { fadeUp, stagger } from "@/lib/motion";
 
 type P = {
@@ -16,6 +17,7 @@ type P = {
 };
 
 export function FeaturedProjects({ projects }: { projects: P[] }) {
+  const t = useTranslations("featuredProjects");
   if (projects.length === 0) return null;
 
   return (
@@ -30,20 +32,20 @@ export function FeaturedProjects({ projects }: { projects: P[] }) {
         >
           <div>
             <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-accent))]/10 px-3 py-1 text-xs font-semibold text-[hsl(var(--color-accent))]">
-              🏆 Projets phares
+              {t("badge")}
             </div>
             <h2 className="font-display text-3xl font-bold text-[hsl(var(--color-foreground))] sm:text-4xl">
-              Sélection de réalisations
+              {t("title")}
             </h2>
             <p className="mt-2 text-[hsl(var(--color-muted))]">
-              Des systèmes réels en production. Cliquez pour le case study complet.
+              {t("subtitle")}
             </p>
           </div>
           <Link
             href="/projects"
             className="text-sm font-semibold text-[hsl(var(--color-accent))] hover:underline"
           >
-            Tous les projets →
+            {t("seeAll")}
           </Link>
         </motion.div>
 
@@ -77,7 +79,7 @@ export function FeaturedProjects({ projects }: { projects: P[] }) {
                   )}
                   {p.isFeatured && (
                     <span className="absolute left-3 top-3 rounded-full bg-[hsl(var(--color-accent-warm))] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[hsl(var(--color-accent-warm-foreground))] shadow-lg">
-                      ★ Phare
+                      ★ {t("featured")}
                     </span>
                   )}
 
@@ -119,7 +121,7 @@ export function FeaturedProjects({ projects }: { projects: P[] }) {
                     )}
                   </div>
                   <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-[hsl(var(--color-accent))] transition-all group-hover:gap-2">
-                    Voir le case study →
+                    {t("viewCaseStudy")} →
                   </div>
                 </div>
               </Link>

@@ -1,46 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { fadeUp, stagger } from "@/lib/motion";
 
 const STEPS = [
-  {
-    num: "01",
-    icon: "💬",
-    title: "Discovery call",
-    duration: "30 min · gratuit",
-    description:
-      "On discute de votre contexte, vos contraintes, vos objectifs. Je vous dis franchement si je peux vous aider ou pas.",
-    tone: "accent",
-  },
-  {
-    num: "02",
-    icon: "📋",
-    title: "Cadrage & proposition",
-    duration: "3 à 5 jours",
-    description:
-      "Je reviens avec un périmètre précis, un planning, un budget ferme. Pas de surprise en cours de route.",
-    tone: "warm",
-  },
-  {
-    num: "03",
-    icon: "⚒️",
-    title: "Build en sprints",
-    duration: "Selon projet",
-    description:
-      "Livraisons hebdomadaires d'incréments fonctionnels. Vous suivez l'avancement en temps réel, vous ajustez en direct.",
-    tone: "electric",
-  },
-  {
-    num: "04",
-    icon: "🚀",
-    title: "Déploiement & support",
-    duration: "30 jours inclus",
-    description:
-      "Mise en prod, formation de vos équipes, documentation complète. Un mois de support inclus pour garantir une vraie adoption.",
-    tone: "gradient",
-  },
-];
+  { num: "01", icon: "💬", key: "step1", tone: "accent" },
+  { num: "02", icon: "📋", key: "step2", tone: "warm" },
+  { num: "03", icon: "⚒️", key: "step3", tone: "electric" },
+  { num: "04", icon: "🚀", key: "step4", tone: "gradient" },
+] as const;
 
 const TONE_STYLES = {
   accent: {
@@ -70,6 +39,8 @@ const TONE_STYLES = {
 };
 
 export function ProcessSection() {
+  const t = useTranslations("process");
+
   return (
     <section className="section-padding border-y border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface-muted))]/40">
       <div className="container-tight">
@@ -81,14 +52,13 @@ export function ProcessSection() {
         >
           <div className="mb-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent))]">
             <span className="h-px w-8 bg-[hsl(var(--color-accent))]" />
-            Processus · 4 étapes
+            {t("badge")}
           </div>
           <h2 className="font-display text-4xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
-            Comment je travaille.
+            {t("title")}
           </h2>
           <p className="mt-4 text-[hsl(var(--color-muted))]">
-            Transparent, itératif, sans mystère. Vous savez toujours où on en est, et à quel
-            horizon la prochaine étape arrive.
+            {t("subtitle")}
           </p>
         </motion.div>
 
@@ -104,7 +74,7 @@ export function ProcessSection() {
           <div className="pointer-events-none absolute left-0 right-0 top-[76px] hidden h-px bg-gradient-to-r from-transparent via-[hsl(var(--color-surface-muted))] to-transparent lg:block" />
 
           {STEPS.map((s) => {
-            const tone = TONE_STYLES[s.tone as keyof typeof TONE_STYLES];
+            const tone = TONE_STYLES[s.tone];
             return (
               <motion.div
                 key={s.num}
@@ -124,22 +94,22 @@ export function ProcessSection() {
 
                   {/* Num */}
                   <div className={`font-mono text-xs font-extrabold uppercase tracking-[0.25em] ${tone.num}`}>
-                    Étape {s.num}
+                    {t("stepLabel")} {s.num}
                   </div>
 
                   {/* Title */}
                   <h3 className="mt-1 font-display text-lg font-extrabold leading-tight text-[hsl(var(--color-foreground))]">
-                    {s.title}
+                    {t(`${s.key}Title` as "step1Title" | "step2Title" | "step3Title" | "step4Title")}
                   </h3>
 
                   {/* Duration pill */}
                   <div className={`mt-2 inline-block rounded-full ${tone.bg} px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${tone.num}`}>
-                    {s.duration}
+                    {t(`${s.key}Duration` as "step1Duration" | "step2Duration" | "step3Duration" | "step4Duration")}
                   </div>
 
                   {/* Description */}
                   <p className="mt-4 text-sm leading-relaxed text-[hsl(var(--color-muted))]">
-                    {s.description}
+                    {t(`${s.key}Description` as "step1Description" | "step2Description" | "step3Description" | "step4Description")}
                   </p>
                 </div>
               </motion.div>

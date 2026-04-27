@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 
 export const metadata: Metadata = {
@@ -22,17 +23,17 @@ async function getData() {
 
 export default async function SkillsPage() {
   const categories = await getData();
+  const t = await getTranslations("skillsPage");
 
   return (
     <div className="section-padding">
       <div className="container-tight">
         <div className="max-w-2xl">
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-[hsl(var(--color-foreground))]">
-            Compétences
+            {t("title")}
           </h1>
           <p className="mt-4 text-[hsl(var(--color-muted))] leading-relaxed">
-            Un profil transverse — du développement à l'intégration système — pour couvrir
-            l'ensemble du cycle de vie d'une solution technique.
+            {t("description")}
           </p>
         </div>
 
@@ -60,7 +61,7 @@ export default async function SkillsPage() {
                     </li>
                   ))}
                   {cat.items.length === 0 && (
-                    <li className="text-xs text-[hsl(var(--color-muted))] italic">Aucun élément.</li>
+                    <li className="text-xs text-[hsl(var(--color-muted))] italic">{t("emptyItems")}</li>
                   )}
                 </ul>
               </div>
@@ -68,8 +69,7 @@ export default async function SkillsPage() {
           </div>
         ) : (
           <p className="mt-12 text-[hsl(var(--color-muted))]">
-            Compétences à définir dans le{" "}
-            <a href="/admin/skills" className="text-[hsl(var(--color-accent))] hover:underline">backoffice</a>.
+            {t("emptyCategories")}
           </p>
         )}
       </div>

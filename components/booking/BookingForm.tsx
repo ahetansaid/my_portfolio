@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 const inputClass =
   "w-full rounded-lg border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] px-3 py-2.5 text-sm text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted))] focus:border-[hsl(var(--color-accent))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/20 transition";
 
 export function BookingForm() {
+  const t = useTranslations("bookingPage");
+  const tCommon = useTranslations("common");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -32,12 +35,12 @@ export function BookingForm() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Erreur d'envoi");
+        throw new Error(data.error ?? t("errorPrefix"));
       }
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      setError(err instanceof Error ? err.message : "Erreur");
+      setError(err instanceof Error ? err.message : tCommon("error"));
     }
   };
 
@@ -49,10 +52,9 @@ export function BookingForm() {
         className="flex flex-col items-center justify-center rounded-2xl border border-green-200 bg-green-50 p-12 text-center"
       >
         <div className="mb-4 text-5xl">✓</div>
-        <h2 className="font-display text-2xl font-bold text-green-900">Demande envoyée !</h2>
+        <h2 className="font-display text-2xl font-bold text-green-900">{t("successTitle")}</h2>
         <p className="mt-3 text-green-700 max-w-md">
-          Merci. Je reviens vers vous dans les 24h pour confirmer un créneau et vous envoyer une
-          invitation calendrier.
+          {t("successMessage")}
         </p>
       </motion.div>
     );
@@ -66,13 +68,13 @@ export function BookingForm() {
       className="space-y-4 rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-8 shadow-sm"
     >
       <h2 className="font-display text-xl font-semibold text-[hsl(var(--color-foreground))]">
-        Demande de rendez-vous
+        {t("formTitle")}
       </h2>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">
-            Nom complet *
+            {t("labelName")} *
           </label>
           <input
             className={inputClass}
@@ -82,7 +84,7 @@ export function BookingForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">Email *</label>
+          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">{t("labelEmail")} *</label>
           <input
             className={inputClass}
             type="email"
@@ -92,7 +94,7 @@ export function BookingForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">Entreprise</label>
+          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">{t("labelCompany")}</label>
           <input
             className={inputClass}
             value={form.company}
@@ -100,7 +102,7 @@ export function BookingForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">Téléphone</label>
+          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">{t("labelPhone")}</label>
           <input
             className={inputClass}
             type="tel"
@@ -112,12 +114,12 @@ export function BookingForm() {
 
       <div>
         <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">
-          Sujet du RDV *
+          {t("labelTopic")} *
         </label>
         <input
           className={inputClass}
           required
-          placeholder="Ex : discuter d'un projet d'intégration ERP"
+          placeholder={t("placeholderTopic")}
           value={form.topic}
           onChange={(e) => setForm({ ...form, topic: e.target.value })}
         />
@@ -125,12 +127,12 @@ export function BookingForm() {
 
       <div>
         <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">
-          Contexte & détails
+          {t("labelMessage")}
         </label>
         <textarea
           className={inputClass}
           rows={4}
-          placeholder="Quelques lignes pour me préparer à notre échange…"
+          placeholder={t("placeholderMessage")}
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
         />
@@ -139,7 +141,7 @@ export function BookingForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">
-            Créneau souhaité
+            {t("labelDate")}
           </label>
           <input
             className={inputClass}
@@ -149,15 +151,15 @@ export function BookingForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">Durée</label>
+          <label className="mb-1.5 block text-sm font-medium text-[hsl(var(--color-foreground))]">{t("labelDuration")}</label>
           <select
             className={inputClass}
             value={form.duration}
             onChange={(e) => setForm({ ...form, duration: Number(e.target.value) })}
           >
-            <option value={30}>30 minutes</option>
-            <option value={45}>45 minutes</option>
-            <option value={60}>1 heure</option>
+            <option value={30}>{t("duration30")}</option>
+            <option value={45}>{t("duration45")}</option>
+            <option value={60}>{t("duration60")}</option>
           </select>
         </div>
       </div>
@@ -169,10 +171,10 @@ export function BookingForm() {
         disabled={status === "loading"}
         className="w-full rounded-lg bg-[hsl(var(--color-accent-warm))] px-4 py-3 text-sm font-semibold text-[hsl(var(--color-accent-warm-foreground))] shadow-sm transition hover:opacity-90 disabled:opacity-60"
       >
-        {status === "loading" ? "Envoi…" : "📅 Envoyer ma demande"}
+        {status === "loading" ? t("submitting") : t("submit")}
       </button>
       <p className="text-center text-xs text-[hsl(var(--color-muted))]">
-        Je reviens vers vous sous 24h avec une proposition de créneau ferme.
+        {t("disclaimer")}
       </p>
     </motion.form>
   );

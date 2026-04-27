@@ -151,7 +151,7 @@
     "badge": "Process · 4 steps",
     "title": "How I work.",
     "subtitle": "Transparent, iterative, no mystery. You always know where we are, and when the next step arrives.",
-    "step1Label": "Step",
+    "stepLabel": "Step",
     "step1Title": "Discovery call",
     "step1Duration": "30 min · free",
     "step1Description": "We talk about your context, constraints, and goals. I tell you honestly whether I can help or not.",
@@ -179,20 +179,67 @@
     "contactEmail": "Email",
     "contactPhone": "Phone",
     "contactLocation": "Location",
+    "contactLocationValue": "Cotonou, Benin",
     "contactLinkedin": "LinkedIn",
     "contactGithub": "GitHub",
     "journeyBadge": "01 · Journey",
     "journeyTitle": "Where I come from, where I'm going.",
     "formationsBadge": "02 · Education",
     "formationsTitle": "Always learning.",
+    "formations": {
+      "epitech": {
+        "year": "2024 — present",
+        "school": "Epitech Benin",
+        "degree": "Coding Academy — Full Stack Developer",
+        "detail": "Project-based intensive training. Next.js, React, TypeScript, scalable architectures, DevOps."
+      },
+      "esep": {
+        "year": "2021 — 2024",
+        "school": "ESEP — Le Berger",
+        "degree": "Professional Bachelor's in IT Systems & Software",
+        "detail": "Software engineering, databases, web development. First projects in PHP/Laravel/MySQL."
+      },
+      "ceg": {
+        "year": "2019 — 2020",
+        "school": "CEG Akpakpa-Centre",
+        "degree": "High school diploma — Science track (Series C)",
+        "detail": "Science baccalaureate — math, physics, biology."
+      }
+    },
     "certsBadge": "03 · Certifications & Awards",
     "certsTitle": "What I've validated.",
+    "certificates": {
+      "blockchain": "Winner — Blockchain Innovators Challenge",
+      "marketing": "Digital Marketing",
+      "communication": "Communicating on the Internet",
+      "hardware": "Computer Hardware Basics",
+      "cyber": "Introduction to Cybersecurity",
+      "ai": "AI & Metaheuristics / Constraint Programming",
+      "cybersecUni": "Cybersecurity in academia"
+    },
     "languagesBadge": "04 · Languages",
     "languagesTitle": "I speak.",
+    "languages": {
+      "french": "French",
+      "yoruba": "Yoruba",
+      "english": "English",
+      "fluent": "Fluent",
+      "intermediate": "Intermediate"
+    },
     "valuesBadge": "05 · Values",
     "valuesTitle": "What guides my work.",
     "interestsBadge": "06 · Beyond code",
     "interestsTitle": "What I also am.",
+    "interests": {
+      "volunteer": "Volunteer",
+      "volunteerDetail": "Turritopsis AISBL",
+      "running": "Running",
+      "football": "Football",
+      "drawing": "Architectural drawing",
+      "art": "Art",
+      "cooking": "Cooking",
+      "traditions": "Traditions"
+    },
     "finalCtaTitle": "Ready to build something together?",
     "finalCtaSubtitle": "30 minutes is enough to scope a project. Free, no commitment, straight to the point.",
     "finalCtaPrimary": "📅 Book 30 min",
@@ -223,6 +270,7 @@
     "duration60": "1 hour",
     "submit": "📅 Send my request",
     "submitting": "Sending…",
+    "errorPrefix": "Send error",
     "disclaimer": "I'll get back to you within 24h with a firm slot proposal.",
     "successTitle": "Request sent!",
     "successMessage": "Thanks. I'll get back to you within 24h to confirm a slot and send you a calendar invite."
@@ -263,6 +311,12 @@
     "code": "⚡ Code",
     "empty": "No public experiments yet."
   },
+  "skillsPage": {
+    "title": "Skills",
+    "description": "A cross-functional profile — from development to systems integration — covering the full lifecycle of a technical solution.",
+    "emptyItems": "No items.",
+    "emptyCategories": "Skills to be defined in the back-office."
+  },
   "cvPage": {
     "badge": "Curriculum Vitae",
     "title": "My full CV",
@@ -281,14 +335,20 @@
   },
   "contactPage": {
     "title": "Contact",
-    "description": "A question, a project, a collaboration? Drop me a line.",
+    "description": "A project, a question, or a collaboration opportunity? Don't hesitate to reach out.",
     "labelName": "Name",
+    "placeholderName": "Jane Doe",
     "labelEmail": "Email",
+    "placeholderEmail": "jane@example.com",
     "labelSubject": "Subject",
+    "placeholderSubject": "Project, collaboration…",
     "labelMessage": "Message",
+    "placeholderMessage": "Describe what you need…",
     "submit": "Send message",
     "submitting": "Sending…",
-    "success": "Message sent! I'll get back to you shortly."
+    "successTitle": "Message sent!",
+    "successMessage": "Thanks, I'll get back to you shortly.",
+    "sendAnother": "Send another message"
   },
   "magicChat": {
     "buttonLabel": "Ask the AI",

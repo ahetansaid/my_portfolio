@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { BookingForm } from "@/components/booking/BookingForm";
 
 export const metadata: Metadata = {
@@ -7,17 +8,18 @@ export const metadata: Metadata = {
     "Réservons 30 minutes pour discuter de votre projet. Gratuit, sans engagement.",
 };
 
-export default function BookingPage() {
+export default async function BookingPage() {
+  const t = await getTranslations("bookingPage");
+
   return (
     <div className="section-padding">
       <div className="container-tight grid gap-12 lg:grid-cols-[1fr_1.2fr]">
         <div>
           <h1 className="font-display text-4xl font-bold tracking-tight text-[hsl(var(--color-foreground))] sm:text-5xl">
-            Prenons 30 minutes
+            {t("title")}
           </h1>
           <p className="mt-4 text-lg text-[hsl(var(--color-muted))]">
-            Gratuit, sans engagement. On discute de votre projet, de vos contraintes, et je vous dis
-            franchement si je peux vous aider.
+            {t("subtitle")}
           </p>
 
           <div className="mt-10 space-y-5">
@@ -26,9 +28,9 @@ export default function BookingPage() {
                 💬
               </div>
               <div>
-                <h3 className="font-semibold text-[hsl(var(--color-foreground))]">On parle de votre projet</h3>
+                <h3 className="font-semibold text-[hsl(var(--color-foreground))]">{t("feature1Title")}</h3>
                 <p className="text-sm text-[hsl(var(--color-muted))]">
-                  Contexte, objectifs, contraintes — tout ce qui m&apos;aide à comprendre votre besoin.
+                  {t("feature1Text")}
                 </p>
               </div>
             </div>
@@ -37,9 +39,9 @@ export default function BookingPage() {
                 🎯
               </div>
               <div>
-                <h3 className="font-semibold text-[hsl(var(--color-foreground))]">Je vous donne mon avis franc</h3>
+                <h3 className="font-semibold text-[hsl(var(--color-foreground))]">{t("feature2Title")}</h3>
                 <p className="text-sm text-[hsl(var(--color-muted))]">
-                  Faisable ou pas, dans quels délais, à quel budget. Pas de bullshit.
+                  {t("feature2Text")}
                 </p>
               </div>
             </div>
@@ -48,9 +50,9 @@ export default function BookingPage() {
                 📋
               </div>
               <div>
-                <h3 className="font-semibold text-[hsl(var(--color-foreground))]">On décide ensemble</h3>
+                <h3 className="font-semibold text-[hsl(var(--color-foreground))]">{t("feature3Title")}</h3>
                 <p className="text-sm text-[hsl(var(--color-muted))]">
-                  Si ça colle, on passe à une phase de cadrage. Sinon, je vous oriente vers mieux.
+                  {t("feature3Text")}
                 </p>
               </div>
             </div>

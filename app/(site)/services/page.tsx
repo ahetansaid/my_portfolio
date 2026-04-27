@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { ServicesClient } from "@/components/services/ServicesClient";
 import { ProcessSection } from "@/components/services/ProcessSection";
@@ -17,6 +18,7 @@ export default async function ServicesPage() {
     where: { isPublished: true },
     orderBy: { sortOrder: "asc" },
   });
+  const t = await getTranslations("servicesPage");
 
   return (
     <div className="relative">
@@ -30,18 +32,18 @@ export default async function ServicesPage() {
         <div className="container-tight pt-20 pb-12 sm:pt-28 sm:pb-16">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--color-accent-warm))]/30 bg-[hsl(var(--color-accent-warm))]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent-warm))]">
             <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--color-accent-warm))]" />
-            {services.length} prestations sur-mesure
+            {services.length} {t("badge")}
           </div>
           <h1 className="font-display text-5xl font-extrabold tracking-tight text-[hsl(var(--color-foreground))] sm:text-6xl lg:text-7xl">
-            Ce que je peux{" "}
-            <span className="text-gradient">construire</span>
+            {t("title1")}{" "}
+            <span className="text-gradient">{t("titleHighlight")}</span>
             <br className="hidden sm:block" />
-            {" pour vous."}
+            {" " + t("title2")}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[hsl(var(--color-muted))]">
-            Pas de package rigide ni de catalogue générique. Chaque mission est{" "}
-            <strong className="text-[hsl(var(--color-foreground))]">cadrée avec vous</strong>{" "}
-            — périmètre, délai, budget clairs dès le départ.
+            {t("description1")}{" "}
+            <strong className="text-[hsl(var(--color-foreground))]">{t("descriptionStrong")}</strong>{" "}
+            {t("description2")}
           </p>
         </div>
       </section>
@@ -65,7 +67,7 @@ export default async function ServicesPage() {
           ) : (
             <div className="rounded-2xl border-2 border-dashed border-[hsl(var(--color-surface-muted))] p-16 text-center">
               <div className="mb-3 text-5xl">🛠</div>
-              <p className="text-[hsl(var(--color-muted))]">Aucun service publié pour l&apos;instant.</p>
+              <p className="text-[hsl(var(--color-muted))]">{t("empty")}</p>
             </div>
           )}
         </div>
@@ -79,18 +81,17 @@ export default async function ServicesPage() {
         <div className="container-tight">
           <div className="relative overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-gradient-to-br from-[hsl(var(--color-accent))]/10 via-[hsl(var(--color-surface))] to-[hsl(var(--color-accent-warm))]/10 p-10 text-center sm:p-16">
             <h2 className="font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
-              Votre projet ne rentre dans aucune case ?
+              {t("finalCtaTitle")}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[hsl(var(--color-muted))] sm:text-lg">
-              Normal — les vrais projets sont toujours hybrides. Réservons 30 minutes pour en
-              parler, je vous dirai honnêtement si je peux vous aider.
+              {t("finalCtaSubtitle")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link href="/booking" className="btn-cta">
-                📅 Prendre un RDV
+                {t("finalCtaPrimary")}
               </Link>
               <Link href="/contact" className="btn-outline">
-                Envoyer un message
+                {t("finalCtaSecondary")}
               </Link>
             </div>
           </div>

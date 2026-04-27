@@ -2,57 +2,39 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { fadeUp, stagger, slideInLeft, slideInRight } from "@/lib/motion";
 
 type TimelineItem = { id: number; year: string; title: string; description: string };
 type Value = { id: number; title: string; description: string };
 
-const FORMATIONS = [
-  {
-    year: "2024 — présent",
-    school: "Epitech Bénin",
-    degree: "Coding Academy — Développeur Full Stack",
-    detail: "Formation intensive par projet. Next.js, React, TypeScript, architectures scalables, DevOps.",
-  },
-  {
-    year: "2021 — 2024",
-    school: "ESEP — Le Berger",
-    degree: "Licence Pro Systèmes Informatiques & Logiciels",
-    detail: "Génie logiciel, bases de données, développement web. Premiers projets en PHP/Laravel/MySQL.",
-  },
-  {
-    year: "2019 — 2020",
-    school: "CEG Akpakpa-Centre",
-    degree: "Baccalauréat Série C (Sciences & Techniques)",
-    detail: "Bac scientifique — maths, physique, biologie.",
-  },
-];
+const FORMATION_KEYS = ["epitech", "esep", "ceg"] as const;
 
-const CERTIFICATES = [
-  { icon: "🏆", title: "Lauréat Défi des Innovateurs Blockchain", issuer: "Africa Blockchain Institute", year: "2024" },
-  { icon: "📡", title: "Marketing Numérique", issuer: "D-CLiC OIF", year: "" },
-  { icon: "💬", title: "Communication sur Internet", issuer: "Smart Africa Digital Academy", year: "" },
-  { icon: "🖥️", title: "Computer Hardware Basics", issuer: "Cisco Academy", year: "" },
-  { icon: "🔒", title: "Introduction to Cybersecurity", issuer: "Cisco Academy", year: "" },
-  { icon: "🧠", title: "IA & Métaheuristiques / Programmation par contraintes", issuer: "FRIARE", year: "" },
-  { icon: "🛡", title: "Cybersécurité en milieu universitaire", issuer: "UMontréal FAS-CYBERSEC", year: "" },
-];
+const CERTIFICATES_META = [
+  { icon: "🏆", key: "blockchain", issuer: "Africa Blockchain Institute", year: "2024" },
+  { icon: "📡", key: "marketing", issuer: "D-CLiC OIF", year: "" },
+  { icon: "💬", key: "communication", issuer: "Smart Africa Digital Academy", year: "" },
+  { icon: "🖥️", key: "hardware", issuer: "Cisco Academy", year: "" },
+  { icon: "🔒", key: "cyber", issuer: "Cisco Academy", year: "" },
+  { icon: "🧠", key: "ai", issuer: "FRIARE", year: "" },
+  { icon: "🛡", key: "cybersecUni", issuer: "UMontréal FAS-CYBERSEC", year: "" },
+] as const;
 
-const LANGUAGES = [
-  { name: "Français", level: "Courant", stars: 5 },
-  { name: "Yoruba", level: "Courant", stars: 5 },
-  { name: "Anglais", level: "Intermédiaire", stars: 3 },
-];
+const LANGUAGES_META = [
+  { key: "french", levelKey: "fluent", stars: 5 },
+  { key: "yoruba", levelKey: "fluent", stars: 5 },
+  { key: "english", levelKey: "intermediate", stars: 3 },
+] as const;
 
-const INTERESTS = [
-  { emoji: "🤝", label: "Bénévole", detail: "Turritopsis AISBL" },
-  { emoji: "🏃", label: "Footing" },
-  { emoji: "⚽", label: "Football" },
-  { emoji: "✏️", label: "Dessin architectural" },
-  { emoji: "🎨", label: "Art" },
-  { emoji: "🍳", label: "Cuisine" },
-  { emoji: "🌍", label: "Traditions" },
-];
+const INTERESTS_META = [
+  { emoji: "🤝", key: "volunteer", detailKey: "volunteerDetail" },
+  { emoji: "🏃", key: "running" },
+  { emoji: "⚽", key: "football" },
+  { emoji: "✏️", key: "drawing" },
+  { emoji: "🎨", key: "art" },
+  { emoji: "🍳", key: "cooking" },
+  { emoji: "🌍", key: "traditions" },
+] as const;
 
 export function AboutClient({
   timeline,
@@ -61,6 +43,12 @@ export function AboutClient({
   timeline: TimelineItem[];
   values: Value[];
 }) {
+  const t = useTranslations("aboutPage");
+  const tFormations = useTranslations("aboutPage.formations");
+  const tCertificates = useTranslations("aboutPage.certificates");
+  const tLanguages = useTranslations("aboutPage.languages");
+  const tInterests = useTranslations("aboutPage.interests");
+
   return (
     <div className="relative">
       {/* HERO ÉDITORIAL */}
@@ -84,7 +72,7 @@ export function AboutClient({
                 className="mb-4 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--color-electric))]/30 bg-[hsl(var(--color-electric))]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-electric))]"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--color-electric))]" />
-                Qui suis-je
+                {t("badge")}
               </motion.div>
 
               <motion.h1
@@ -99,34 +87,31 @@ export function AboutClient({
                 variants={fadeUp}
                 className="mt-3 text-xl font-medium text-[hsl(var(--color-muted))]"
               >
-                Développeur Full Stack · Intégrateur Systèmes · Cotonou 🇧🇯
+                {t("roleLabel")}
               </motion.p>
 
               <motion.p
                 variants={fadeUp}
                 className="mt-8 max-w-2xl text-lg leading-relaxed text-[hsl(var(--color-foreground))]"
               >
-                Je code depuis l&apos;adolescence et je construis aujourd&apos;hui des systèmes qui{" "}
-                <strong>tournent en production pour de vrais utilisateurs</strong>. Mon terrain
-                de jeu : l&apos;intégration SI, le full-stack TypeScript, et les SaaS pour
-                l&apos;Afrique francophone.
+                {t("profile1")}{" "}
+                <strong>{t("profileStrong")}</strong>
+                {t("profile2")}
               </motion.p>
 
               <motion.p
                 variants={fadeUp}
                 className="mt-4 max-w-2xl text-base leading-relaxed text-[hsl(var(--color-muted))]"
               >
-                Ce qui me motive : résoudre des problèmes métier concrets avec du code propre.
-                Pas les démos parfaites qui cassent en prod — les systèmes qui tiennent 6 mois
-                après le déploiement, sans qu&apos;on m&apos;appelle à 2h du matin.
+                {t("motivation")}
               </motion.p>
 
               <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-3">
                 <a href="mailto:saidahetan@gmail.com" className="btn-cta">
-                  ✉ Envoyer un email
+                  {t("ctaEmail")}
                 </a>
                 <Link href="/booking" className="btn-outline">
-                  Prendre RDV
+                  {t("ctaBooking")}
                 </Link>
               </motion.div>
             </div>
@@ -142,10 +127,10 @@ export function AboutClient({
                 </div>
                 <div>
                   <div className="font-display text-lg font-bold text-[hsl(var(--color-foreground))]">
-                    Contact direct
+                    {t("contactTitle")}
                   </div>
                   <div className="text-xs text-[hsl(var(--color-muted))]">
-                    Réponse sous 24h
+                    {t("contactSubtitle")}
                   </div>
                 </div>
               </div>
@@ -153,26 +138,26 @@ export function AboutClient({
               <ul className="space-y-3 text-sm">
                 <ContactLine
                   icon="✉"
-                  label="Email"
+                  label={t("contactEmail")}
                   value="saidahetan@gmail.com"
                   href="mailto:saidahetan@gmail.com"
                 />
                 <ContactLine
                   icon="📞"
-                  label="Téléphone"
+                  label={t("contactPhone")}
                   value="+229 90 20 06 21"
                   href="tel:+22990200621"
                 />
-                <ContactLine icon="📍" label="Localisation" value="Cotonou, Bénin" />
+                <ContactLine icon="📍" label={t("contactLocation")} value={t("contactLocationValue")} />
                 <ContactLine
                   icon="💼"
-                  label="LinkedIn"
+                  label={t("contactLinkedin")}
                   value="@mohamed-saïd-ahetan"
                   href="https://linkedin.com/in/mohamed-saïd-ahetan"
                 />
                 <ContactLine
                   icon="⚡"
-                  label="GitHub"
+                  label={t("contactGithub")}
                   value="@ahetansaid"
                   href="https://github.com/ahetansaid"
                 />
@@ -194,10 +179,10 @@ export function AboutClient({
             >
               <div className="mb-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent))]">
                 <span className="h-px w-8 bg-[hsl(var(--color-accent))]" />
-                01 · Parcours
+                {t("journeyBadge")}
               </div>
               <h2 className="font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
-                D&apos;où je viens, où je vais.
+                {t("journeyTitle")}
               </h2>
             </motion.div>
 
@@ -244,10 +229,10 @@ export function AboutClient({
           >
             <div className="mb-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent-warm))]">
               <span className="h-px w-8 bg-[hsl(var(--color-accent-warm))]" />
-              02 · Formations
+              {t("formationsBadge")}
             </div>
             <h2 className="font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
-              Apprendre, toujours.
+              {t("formationsTitle")}
             </h2>
           </motion.div>
 
@@ -258,38 +243,35 @@ export function AboutClient({
             viewport={{ once: true, margin: "-80px" }}
             className="grid gap-6 md:grid-cols-3"
           >
-            {FORMATIONS.map((f, i) => (
+            {FORMATION_KEYS.map((fKey, i) => (
               <motion.div
-                key={f.school}
+                key={fKey}
                 variants={fadeUp}
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
                 className="group relative overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-7 shadow-sm transition-shadow hover:shadow-2xl"
               >
-                {/* Gradient top accent line */}
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[hsl(var(--color-accent))] via-[hsl(var(--color-accent-warm))] to-[hsl(var(--color-electric))] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                {/* Index number XL en arrière-plan */}
                 <div className="pointer-events-none absolute -right-2 -top-4 font-display text-9xl font-extrabold leading-none text-[hsl(var(--color-accent))]/[0.06] transition-colors duration-500 group-hover:text-[hsl(var(--color-accent-warm))]/[0.12]">
                   0{i + 1}
                 </div>
 
-                {/* Glow hover */}
                 <div className="pointer-events-none absolute -inset-x-8 -bottom-16 h-40 rounded-full bg-[hsl(var(--color-accent))]/20 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
 
                 <div className="relative">
                   <div className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent-warm))]">
-                    {f.year}
+                    {tFormations(`${fKey}.year`)}
                   </div>
                   <h3 className="mt-3 font-display text-lg font-extrabold leading-tight text-[hsl(var(--color-foreground))]">
-                    {f.degree}
+                    {tFormations(`${fKey}.degree`)}
                   </h3>
                   <div className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-[hsl(var(--color-accent))]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--color-accent))]" />
-                    {f.school}
+                    {tFormations(`${fKey}.school`)}
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-[hsl(var(--color-muted))]">
-                    {f.detail}
+                    {tFormations(`${fKey}.detail`)}
                   </p>
                 </div>
               </motion.div>
@@ -310,10 +292,10 @@ export function AboutClient({
           >
             <div className="mb-6 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-electric))]">
               <span className="h-px w-8 bg-[hsl(var(--color-electric))]" />
-              03 · Certifications & Distinctions
+              {t("certsBadge")}
             </div>
             <h2 className="mb-8 font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-4xl">
-              Ce que j&apos;ai validé.
+              {t("certsTitle")}
             </h2>
             <motion.div
               variants={stagger}
@@ -322,8 +304,7 @@ export function AboutClient({
               viewport={{ once: true }}
               className="grid gap-4 sm:grid-cols-2"
             >
-              {CERTIFICATES.map((c, i) => {
-                // Gradient unique par card (cycle sur 3 tons)
+              {CERTIFICATES_META.map((c, i) => {
                 const tones = [
                   "from-[hsl(var(--color-accent))]/15 to-[hsl(var(--color-accent))]/0",
                   "from-[hsl(var(--color-accent-warm))]/15 to-[hsl(var(--color-accent-warm))]/0",
@@ -339,19 +320,17 @@ export function AboutClient({
 
                 return (
                   <motion.div
-                    key={i}
+                    key={c.key}
                     variants={fadeUp}
                     whileHover={{ y: -4, scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 300, damping: 22 }}
                     className="group relative overflow-hidden rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-5 shadow-sm transition-shadow hover:shadow-xl"
                   >
-                    {/* Gradient hover overlay */}
                     <div
                       className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${tone} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
                     />
 
                     <div className="relative flex items-start gap-4">
-                      {/* Icon dans un cercle gradient */}
                       <div
                         className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl ${ib} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[-8deg]`}
                       >
@@ -359,7 +338,7 @@ export function AboutClient({
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-display text-sm font-extrabold leading-tight text-[hsl(var(--color-foreground))]">
-                          {c.title}
+                          {tCertificates(c.key)}
                         </div>
                         <div className="mt-1.5 flex items-center gap-2 text-[11px] text-[hsl(var(--color-muted))]">
                           <span className="font-semibold uppercase tracking-wider">
@@ -392,19 +371,19 @@ export function AboutClient({
           >
             <div className="mb-6 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent-warm))]">
               <span className="h-px w-8 bg-[hsl(var(--color-accent-warm))]" />
-              04 · Langues
+              {t("languagesBadge")}
             </div>
             <h2 className="mb-8 font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-4xl">
-              Je parle.
+              {t("languagesTitle")}
             </h2>
             <div className="space-y-4 rounded-2xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6">
-              {LANGUAGES.map((l) => (
-                <div key={l.name}>
+              {LANGUAGES_META.map((l) => (
+                <div key={l.key}>
                   <div className="mb-1.5 flex items-center justify-between">
                     <span className="font-display font-bold text-[hsl(var(--color-foreground))]">
-                      {l.name}
+                      {tLanguages(l.key)}
                     </span>
-                    <span className="text-xs text-[hsl(var(--color-muted))]">{l.level}</span>
+                    <span className="text-xs text-[hsl(var(--color-muted))]">{tLanguages(l.levelKey)}</span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-[hsl(var(--color-surface-muted))]">
                     <motion.div
@@ -434,10 +413,10 @@ export function AboutClient({
             >
               <div className="mb-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-accent))]">
                 <span className="h-px w-8 bg-[hsl(var(--color-accent))]" />
-                05 · Valeurs
+                {t("valuesBadge")}
               </div>
               <h2 className="font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
-                Ce qui guide mon travail.
+                {t("valuesTitle")}
               </h2>
             </motion.div>
 
@@ -464,10 +443,8 @@ export function AboutClient({
                     transition={{ type: "spring", stiffness: 300, damping: 22 }}
                     className="group relative overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] p-6 shadow-sm transition-shadow hover:shadow-2xl"
                   >
-                    {/* Left accent bar */}
                     <div className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${acc.bar}`} />
 
-                    {/* Corner glow on hover */}
                     <div className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full ${acc.dot} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20`} />
 
                     <div className="relative">
@@ -503,10 +480,10 @@ export function AboutClient({
           >
             <div className="mb-3 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--color-electric))]">
               <span className="h-px w-8 bg-[hsl(var(--color-electric))]" />
-              06 · Hors du code
+              {t("interestsBadge")}
             </div>
             <h2 className="font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
-              Ce que je suis aussi.
+              {t("interestsTitle")}
             </h2>
           </motion.div>
 
@@ -517,19 +494,19 @@ export function AboutClient({
             viewport={{ once: true }}
             className="flex flex-wrap gap-3"
           >
-            {INTERESTS.map((i) => (
+            {INTERESTS_META.map((i) => (
               <motion.div
-                key={i.label}
+                key={i.key}
                 variants={fadeUp}
                 whileHover={{ y: -4, scale: 1.04 }}
                 className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--color-surface-muted))] bg-[hsl(var(--color-surface))] px-5 py-3 shadow-sm transition hover:border-[hsl(var(--color-accent))]/40 hover:shadow-md"
               >
                 <span className="text-xl">{i.emoji}</span>
                 <span className="font-display font-semibold text-[hsl(var(--color-foreground))]">
-                  {i.label}
+                  {tInterests(i.key)}
                 </span>
-                {i.detail && (
-                  <span className="text-xs text-[hsl(var(--color-muted))]">· {i.detail}</span>
+                {"detailKey" in i && i.detailKey && (
+                  <span className="text-xs text-[hsl(var(--color-muted))]">· {tInterests(i.detailKey)}</span>
                 )}
               </motion.div>
             ))}
@@ -547,17 +524,17 @@ export function AboutClient({
             className="relative overflow-hidden rounded-3xl border border-[hsl(var(--color-surface-muted))] bg-gradient-to-br from-[hsl(var(--color-accent))]/10 via-[hsl(var(--color-surface))] to-[hsl(var(--color-accent-warm))]/10 p-10 text-center sm:p-16"
           >
             <h2 className="font-display text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl">
-              Prêt à construire quelque chose ensemble ?
+              {t("finalCtaTitle")}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[hsl(var(--color-muted))] sm:text-lg">
-              30 minutes suffisent pour cadrer un projet. Gratuit, sans engagement, direct.
+              {t("finalCtaSubtitle")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/booking" className="btn-cta">
-                📅 Réserver 30 min
+                {t("finalCtaPrimary")}
               </Link>
               <Link href="/projects" className="btn-outline">
-                Voir mes réalisations
+                {t("finalCtaSecondary")}
               </Link>
             </div>
           </motion.div>

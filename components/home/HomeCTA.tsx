@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export function HomeCTA() {
+  const t = useTranslations("homeCta");
   return (
     <section className="section-padding">
       <div className="container-tight">
@@ -17,18 +19,17 @@ export function HomeCTA() {
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--color-accent))/0.15,transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--color-accent-warm))/0.15,transparent_50%)]" />
 
           <h2 className="font-display text-3xl font-bold text-[hsl(var(--color-foreground))] sm:text-5xl">
-            Un projet en tête ?
+            {t("title")}
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-[hsl(var(--color-muted))] sm:text-lg">
-            Réservons 30 minutes pour en discuter. Sans engagement, sans blabla — on parle de
-            votre problème et je vous dis franchement si je peux vous aider.
+            {t("subtitle")}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link href="/booking" className="btn-cta">
-              📅 Prendre un RDV
+              {t("ctaPrimary")}
             </Link>
             <Link href="/contact" className="btn-outline">
-              Envoyer un message
+              {t("ctaSecondary")}
             </Link>
           </div>
         </motion.div>

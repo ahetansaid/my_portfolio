@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { fadeUp, stagger } from "@/lib/motion";
 
 type S = {
@@ -15,6 +16,7 @@ type S = {
 };
 
 export function ServicesPreview({ services }: { services: S[] }) {
+  const t = useTranslations("servicesPreview");
   if (services.length === 0) return null;
 
   return (
@@ -28,10 +30,10 @@ export function ServicesPreview({ services }: { services: S[] }) {
           className="mb-12 text-center"
         >
           <h2 className="font-display text-3xl font-bold text-[hsl(var(--color-foreground))] sm:text-4xl">
-            Comment je peux vous aider
+            {t("title")}
           </h2>
           <p className="mt-3 text-[hsl(var(--color-muted))] max-w-2xl mx-auto">
-            Des services sur mesure, pensés pour livrer des résultats mesurables — pas juste du code.
+            {t("subtitle")}
           </p>
         </motion.div>
 
@@ -69,7 +71,7 @@ export function ServicesPreview({ services }: { services: S[] }) {
 
         <div className="mt-10 text-center">
           <Link href="/services" className="text-sm font-medium text-[hsl(var(--color-accent))] hover:underline">
-            Détails des services →
+            {t("seeAll")}
           </Link>
         </div>
       </div>
