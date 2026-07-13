@@ -274,3 +274,142 @@ enum BookingStatus {
   cancelled
   completed
 }
+
+// ─────────────────────────────────────────────────────────────
+// Career Radar — module opportunités (voir docs/CAREER_RADAR_SPEC.md)
+// ─────────────────────────────────────────────────────────────
+
+enum OppStream {
+  smart_ports
+  general
+}
+
+enum OppCategory {
+  scholarship
+  fellowship
+  job
+  internship
+  conference
+  training
+  volunteering
+  grant
+  call
+}
+
+enum SourceType {
+  rss
+  api
+  scrape
+  manual
+}
+
+enum OppStatus {
+  new
+  reviewed
+  saved
+  dismissed
+}
+
+enum AppStage {
+  spotted
+  considering
+  preparing
+  submitted
+  interview
+  accepted
+  rejected
+  withdrawn
+}
+
+model OpportunitySource {
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(200)
+  type          SourceType
+  url           String        @db.VarChar(600)
+  category      OppCategory?
+  stream        OppStream     @default(general)
+  config        Json?
+  isActive      Boolean       @default(true) @map("is_active")
+  lastFetchedAt DateTime?     @map("last_fetched_at")
+  lastStatus    String?       @map("last_status") @db.VarChar(500)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  opportunities Opportunity[]
+
+  @@map("opp_sources")
+}
+
+model Opportunity {
+  id                Int                @id @default(autoincrement())
+  sourceId          Int                @map("source_id")
+  source            OpportunitySource  @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  externalId        String             @map("external_id") @db.VarChar(500)
+  url               String             @db.VarChar(1000)
+  title             String             @db.VarChar(500)
+  org               String?            @db.VarChar(300)
+  category          OppCategory
+  stream            OppStream
+  rawText           String?            @map("raw_text") @db.Text
+  summary           String?            @db.Text
+  location          String?            @db.VarChar(300)
+  country           String?            @db.VarChar(120)
+  isRemote          Boolean            @default(false) @map("is_remote")
+  languageReq       String?            @map("language_req") @db.VarChar(200)
+  fundingInfo       String?            @map("funding_info") @db.VarChar(500)
+  eligibility       String?            @db.Text
+  deadline          DateTime?
+  postedAt          DateTime?          @map("posted_at")
+  tags              Json?
+  fitScore          Int?               @map("fit_score")
+  fitReasons        Json?              @map("fit_reasons")
+  whyNow            String?            @map("why_now") @db.Text
+  recommendedAction String?            @map("recommended_action") @db.Text
+  status            OppStatus          @default(new)
+  notifiedAt        DateTime?          @map("notified_at")
+  scoredAt          DateTime?          @map("scored_at")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  track             ApplicationTrack?
+
+  @@unique([sourceId, externalId])
+  @@index([stream, fitScore])
+  @@index([deadline])
+  @@index([status])
+  @@map("opportunities")
+}
+
+model ApplicationTrack {
+  id             Int         @id @default(autoincrement())
+  opportunityId  Int         @unique @map("opportunity_id")
+  opportunity    Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  stage          AppStage    @default(spotted)
+  notes          String?     @db.Text
+  nextActionDate DateTime?   @map("next_action_date")
+  submittedAt    DateTime?   @map("submitted_at")
+  outcome        String?     @db.VarChar(500)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  @@map("opp_application_tracks")
+}
+
+model RadarProfile {
+  id           Int      @id @default(1)
+  profileText  String   @map("profile_text") @db.Text
+  englishLevel String   @default("A1") @map("english_level") @db.VarChar(10)
+  weights      Json
+  fitThreshold Int      @default(70) @map("fit_threshold")
+  digestDay    Int      @default(1) @map("digest_day")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("radar_profile")
+}
+
+model DigestRun {
+  id        Int      @id @default(autoincrement())
+  runAt     DateTime @default(now()) @map("run_at")
+  kind      String   @db.VarChar(20)
+  itemCount Int      @map("item_count")
+  status    String   @db.VarChar(200)
+
+  @@map("radar_digest_runs")
+}

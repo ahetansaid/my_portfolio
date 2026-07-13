@@ -14,7 +14,7 @@ type NavItem = {
   label: string;
   icon: string;
   badgeKey?: keyof Badges;
-  group?: "content" | "inbox" | "settings";
+  group?: "content" | "radar" | "inbox" | "settings";
 };
 
 const NAV: NavItem[] = [
@@ -27,6 +27,9 @@ const NAV: NavItem[] = [
   { href: "/admin/about", label: "À propos", icon: "☰", group: "content" },
   { href: "/admin/skills", label: "Compétences", icon: "★", group: "content" },
 
+  { href: "/admin/radar", label: "Career Radar", icon: "📡", group: "radar" },
+  { href: "/admin/radar/tracker", label: "Candidatures", icon: "🎯", group: "radar" },
+
   { href: "/admin/messages", label: "Messages", icon: "✉", badgeKey: "messagesUnread", group: "inbox" },
   { href: "/admin/bookings", label: "Rendez-vous", icon: "📅", badgeKey: "bookingsPending", group: "inbox" },
 
@@ -36,6 +39,7 @@ const NAV: NavItem[] = [
 
 const GROUP_LABELS: Record<NonNullable<NavItem["group"]>, string> = {
   content: "Contenu",
+  radar: "Career Radar",
   inbox: "Boîte de réception",
   settings: "Système",
 };
@@ -84,7 +88,7 @@ export function Sidebar({
     };
   }, [pathname]);
 
-  const groups = (["content", "inbox", "settings"] as const).map((g) => ({
+  const groups = (["content", "radar", "inbox", "settings"] as const).map((g) => ({
     group: g,
     items: NAV.filter((n) => n.group === g),
   }));
