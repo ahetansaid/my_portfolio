@@ -1,6 +1,6 @@
-import OpenAI from "openai";
 import type { OppCategory, OppStream } from "@prisma/client";
 import type { RawItem } from "./fetch";
+import { callLLMJson, parseJsonLoose } from "./llm";
 
 const CATEGORIES: OppCategory[] = [
   "scholarship", "fellowship", "job", "internship",
@@ -43,10 +43,8 @@ function parseDeadline(val: unknown): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
-/** Extraction + scoring d'une opportunité réelle contre le profil (1 appel OpenAI). */
+/** Extraction + scoring d'une opportunité réelle contre le profil (1 appel LLM : Claude ou OpenAI). */
 export async function scoreItem(profile: RadarProfileLite, item: RawItem): Promise<ScoredFields> {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   const systemPrompt = `Tu es le moteur d'un radar d'opportunités personnel. À partir d'une opportunité (bourse, emploi, conférence, formation, bénévolat, appel...) et du profil d'une personne, tu EXTRAIS les champs structurés puis tu ATTRIBUES un score de pertinence.
 
 Réponds UNIQUEMENT en JSON valide strict :
@@ -90,17 +88,8 @@ Contenu : ${item.rawText || "(pas de description)"}
 
 Extrais les champs et calcule le score. JSON strict uniquement.`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
-    ],
-    response_format: { type: "json_object" },
-    temperature: 0.2,
-  });
-
-  const parsed = JSON.parse(completion.choices[0]?.message?.content ?? "{}");
+  const raw = await callLLMJson(systemPrompt, userPrompt);
+  const parsed = parseJsonLoose(raw);
 
   const rawScore = Number(parsed.fitScore);
   const fitScore = Number.isFinite(rawScore) ? Math.max(0, Math.min(100, Math.round(rawScore))) : 0;
