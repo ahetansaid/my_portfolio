@@ -210,6 +210,7 @@
     "certsTitle": "Ce que j'ai validé.",
     "certificates": {
       "blockchain": "Lauréat Défi des Innovateurs Blockchain",
+      "icann": "Introduction à l'ICANN & réunions publiques",
       "marketing": "Marketing Numérique",
       "communication": "Communication sur Internet",
       "hardware": "Computer Hardware Basics",
@@ -232,7 +233,10 @@
     "interestsTitle": "Ce que je suis aussi.",
     "interests": {
       "volunteer": "Bénévole",
-      "volunteerDetail": "Turritopsis AISBL",
+      "volunteerDetail": "IDA international",
+      "governance": "Gouvernance internet",
+      "governanceDetail": "ICANN · IGF",
+      "tennis": "Tennis",
       "running": "Footing",
       "football": "Football",
       "drawing": "Dessin architectural",

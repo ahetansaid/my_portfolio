@@ -301,8 +301,8 @@ async function main() {
     },
     {
       year: "Avril 2025-présent",
-      title: "Intégrateur Système Informatique — Drwintech Inc.",
-      description: "Intégration et déploiement de systèmes métier : ERP, GED, DGMS, gestion de flotte GPS. Livraison de SaaS en production pour des clients réels.",
+      title: "Intégrateur Système Informatique — DrwinTech Inc.",
+      description: "Conception et déploiement de plateformes numériques pour le marché ouest-africain. Réalisation phare : Afri-Members — SaaS de cotisations avec Mobile Money (FedaPay), relances SMS (Africa's Talking) et module de conformité légale par IA (Anthropic Claude). Migration de paiement Gobipay → FedaPay, système OTP SMS, prototype Alogo.",
       sortOrder: 7,
     },
   ];
@@ -329,24 +329,31 @@ async function main() {
   const skillsData = [
     {
       name: "Développement",
-      description: "Langages et frameworks maîtrisés au quotidien",
+      description: "Langages & frameworks maîtrisés au quotidien",
       icon: "💻",
       sortOrder: 1,
-      items: ["TypeScript", "Next.js", "React", "Node.js", "NestJS", "Django", "Laravel", "Python", "PHP"],
+      items: ["TypeScript", "JavaScript (ES6+)", "React", "Next.js", "Vue.js", "Node.js", "Express", "Laravel", "Python", "PHP", "C++"],
     },
     {
-      name: "Systèmes & Infra",
-      description: "Bases de données, intégration et déploiement",
-      icon: "🔧",
+      name: "Bases de données & DevOps",
+      description: "Données, conteneurs et intégration continue",
+      icon: "🗄️",
       sortOrder: 2,
-      items: ["MySQL", "PostgreSQL", "Redis", "Docker", "ERP", "GED", "DGMS", "Elasticsearch", "MinIO"],
+      items: ["MySQL", "MariaDB", "PostgreSQL", "Supabase", "Prisma", "Drizzle ORM", "Docker", "Git / GitHub", "CI/CD", "Linux"],
     },
     {
-      name: "Méthodologies",
-      description: "Approches et outils de travail",
-      icon: "📋",
+      name: "Paiements & Intégrations",
+      description: "Mobile Money, SMS et API métier",
+      icon: "💳",
       sortOrder: 3,
-      items: ["Agile / Scrum", "Git Flow", "CI/CD", "TDD", "Architecture logicielle", "API REST", "DevOps"],
+      items: ["FedaPay", "Mobile Money (MTN/Moov/Orange)", "Africa's Talking (SMS OTP)", "API REST", "Webhooks"],
+    },
+    {
+      name: "IA & Données",
+      description: "IA appliquée et analyse de données",
+      icon: "🤖",
+      sortOrder: 4,
+      items: ["Anthropic Claude API", "OpenAI", "RAG", "PowerBI", "Analyse de données"],
     },
   ];
   for (const cat of skillsData) {

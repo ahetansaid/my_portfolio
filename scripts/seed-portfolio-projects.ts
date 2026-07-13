@@ -34,6 +34,8 @@ const TECHNOLOGIES: {
   { name: "Socket.IO", slug: "socketio", category: "systems", sortOrder: 36 },
   { name: "ERP", slug: "erp", category: "systems", sortOrder: 40 },
   { name: "DGMS", slug: "dgms", category: "systems", sortOrder: 41 },
+  { name: "FedaPay", slug: "fedapay", category: "systems", sortOrder: 42 },
+  { name: "Africa's Talking", slug: "africas-talking", category: "systems", sortOrder: 43 },
   // Methodologies
   { name: "RAG", slug: "rag", category: "methodologies", sortOrder: 50 },
 ];
@@ -54,6 +56,24 @@ type ProjectSeed = {
 };
 
 const PROJECTS: ProjectSeed[] = [
+  {
+    slug: "afri-members",
+    name: "Afri-Members",
+    tagline:
+      "SaaS de gestion des cotisations d'associations : Mobile Money, relances SMS et conformité légale par IA.",
+    discoveryContext:
+      "Au Bénin et en Afrique de l'Ouest, les organisations de la société civile (OSC) et associations gèrent leurs cotisations à la main : cahiers, tableurs, encaissements en espèces. Le suivi des membres à jour est flou, les relances se font au cas par cas, et la mise en conformité légale (statuts, déclarations) mobilise des heures de travail administratif à chaque échéance.",
+    problem:
+      "Construire une plateforme SaaS qui encaisse les cotisations en Mobile Money, automatise les relances des membres en retard, et vérifie automatiquement la conformité légale des statuts d'association — le tout pilotable depuis un simple téléphone, dans un contexte à faible bande passante.",
+    approach:
+      "Backend Node.js / Express + MySQL. Encaissement Mobile Money (MTN / Moov / Orange) via l'API FedaPay : webhooks temps réel, endpoint de vérification de transaction, migration complète de l'ancien prestataire Gobipay vers FedaPay. OTP SMS via Africa's Talking (sandbox + production) avec composant de vérification frontend et affichage du code en dev-mode. Module de conformité IA branché sur l'API Anthropic Claude : analyse des statuts d'association contre 28 règles légales, scoring de conformité, génération de rapports et de fichiers DOCX correctifs.",
+    results:
+      "Réduction estimée à ~90 % du temps administratif pour les OSC. Chaîne Mobile Money opérationnelle (FedaPay), relances SMS automatiques (Africa's Talking), et analyse de conformité produisant scores + rapports DOCX. Migration de paiement Gobipay → FedaPay livrée. Documentation technique et spécifications d'API rédigées (COMPLIANCE_DOCUMENTS.md).",
+    sortOrder: 0,
+    isPublished: true,
+    isFeatured: true,
+    technologySlugs: ["nodejs", "express", "mysql", "react", "typescript", "fedapay", "africas-talking", "claude-ai"],
+  },
   {
     slug: "workpulse",
     name: "WorkPulse",
@@ -171,6 +191,22 @@ const PROJECTS: ProjectSeed[] = [
     sortOrder: 70,
     isPublished: true,
     technologySlugs: ["rust", "claude-ai"],
+  },
+  {
+    slug: "alogo",
+    name: "Alogo",
+    tagline: "Prototype mobile de valorisation des artisans béninois, avec paiement et messagerie.",
+    discoveryContext:
+      "Les artisans béninois (couturiers, menuisiers, artistes…) restent invisibles au-delà du bouche-à-oreille et n'ont aucun outil simple pour être trouvés, contactés ou payés directement par des clients. La valeur de leur travail se perd faute de vitrine et de canal de transaction.",
+    problem:
+      "Prototyper une application mobile qui donne une vitrine aux artisans, permet la prise de contact directe et intègre le paiement, pour raccourcir la distance entre l'artisan et le client final.",
+    approach:
+      "Prototype produit développé chez DrwinTech : profils artisans, messagerie in-app et intégration paiement Mobile Money. Objectif : valider le parcours artisan → client avant industrialisation.",
+    results:
+      "Prototype fonctionnel démontrant le parcours complet (vitrine, messagerie, paiement). Sert de preuve de concept pour une future itération produit.",
+    sortOrder: 65,
+    isPublished: true,
+    technologySlugs: ["react", "typescript", "nodejs", "fedapay"],
   },
 ];
 

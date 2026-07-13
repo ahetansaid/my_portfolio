@@ -12,6 +12,7 @@ const FORMATION_KEYS = ["epitech", "esep", "ceg"] as const;
 
 const CERTIFICATES_META = [
   { icon: "🏆", key: "blockchain", issuer: "Africa Blockchain Institute", year: "2024" },
+  { icon: "🌐", key: "icann", issuer: "ICANN", year: "2024" },
   { icon: "📡", key: "marketing", issuer: "D-CLiC OIF", year: "" },
   { icon: "💬", key: "communication", issuer: "Smart Africa Digital Academy", year: "" },
   { icon: "🖥️", key: "hardware", issuer: "Cisco Academy", year: "" },
@@ -28,6 +29,8 @@ const LANGUAGES_META = [
 
 const INTERESTS_META = [
   { emoji: "🤝", key: "volunteer", detailKey: "volunteerDetail" },
+  { emoji: "🌐", key: "governance", detailKey: "governanceDetail" },
+  { emoji: "🎾", key: "tennis" },
   { emoji: "🏃", key: "running" },
   { emoji: "⚽", key: "football" },
   { emoji: "✏️", key: "drawing" },
