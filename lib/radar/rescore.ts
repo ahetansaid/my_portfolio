@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { scoreItem, type RadarProfileLite } from "./score";
+import { notifyPending } from "./notify";
 
 /** Enrichit (score) les opportunités réelles non encore scorées. */
 export async function rescoreUnscored(opts: { limit?: number } = {}) {
@@ -61,5 +62,6 @@ export async function rescoreUnscored(opts: { limit?: number } = {}) {
     }
   }
 
-  return { pending: pending.length, rescored, errors };
+  const notif = await notifyPending();
+  return { pending: pending.length, rescored, errors, notified: notif.sent };
 }

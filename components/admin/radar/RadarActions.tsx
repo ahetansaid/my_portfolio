@@ -21,7 +21,7 @@ export function RadarActions({ unscoredCount }: { unscoredCount: number }) {
       if (path.includes("ingest")) {
         toast.success(`Scan terminé · ${data.created ?? 0} scorées, ${data.createdUnscored ?? 0} non-scorées, ${data.skipped ?? 0} doublons`);
       } else {
-        toast.success(`Ré-scoring · ${data.rescored ?? 0} enrichies, ${data.errors ?? 0} erreurs`);
+        toast.success(`Ré-scoring · ${data.rescored ?? 0} enrichies, ${data.notified ?? 0} emails envoyés, ${data.errors ?? 0} erreurs`);
       }
       router.refresh();
     } catch (e) {

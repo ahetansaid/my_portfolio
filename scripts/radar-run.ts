@@ -6,7 +6,7 @@ async function main() {
   console.log(`→ Ingestion réelle (limit ${limit}/source)…`);
   const stats = await runIngest({ limitPerSource: limit });
   console.log("\n=== Résultat ===");
-  console.log(`Sources: ${stats.sources} · Récupérés: ${stats.fetched} · Créés scorés: ${stats.created} · Créés non-scorés: ${stats.createdUnscored} · Ignorés (doublons): ${stats.skipped} · Erreurs scoring: ${stats.errors}`);
+  console.log(`Sources: ${stats.sources} · Récupérés: ${stats.fetched} · Créés scorés: ${stats.created} · Créés non-scorés: ${stats.createdUnscored} · Ignorés (doublons): ${stats.skipped} · Erreurs scoring: ${stats.errors} · Emails envoyés: ${stats.notified}`);
   if (stats.createdItems.length) {
     console.log("\nNouvelles opportunités (score) :");
     for (const it of stats.createdItems.sort((a, b) => (b.fitScore ?? 0) - (a.fitScore ?? 0))) {

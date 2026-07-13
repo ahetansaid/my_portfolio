@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { SOURCES } from "./sources";
 import { fetchRss } from "./fetch";
 import { scoreItem, type RadarProfileLite } from "./score";
+import { notifyPending } from "./notify";
 
 export type IngestStats = {
   sources: number;
@@ -10,6 +11,7 @@ export type IngestStats = {
   createdUnscored: number;
   skipped: number;
   errors: number;
+  notified: number;
   createdItems: { id: number; title: string; stream: string; fitScore: number | null }[];
 };
 
@@ -31,7 +33,7 @@ export async function runIngest(opts: { limitPerSource?: number } = {}): Promise
   };
 
   const stats: IngestStats = {
-    sources: 0, fetched: 0, created: 0, createdUnscored: 0, skipped: 0, errors: 0, createdItems: [],
+    sources: 0, fetched: 0, created: 0, createdUnscored: 0, skipped: 0, errors: 0, notified: 0, createdItems: [],
   };
 
   for (const src of SOURCES) {
@@ -113,5 +115,7 @@ export async function runIngest(opts: { limitPerSource?: number } = {}): Promise
     }
   }
 
+  const notif = await notifyPending();
+  stats.notified = notif.sent;
   return stats;
 }
