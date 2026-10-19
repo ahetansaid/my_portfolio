@@ -11,7 +11,8 @@ export type RawItem = {
 
 const parser = new Parser({
   timeout: 30_000,
-  headers: { "User-Agent": "career-radar/1.0 (+portfolio)" },
+  // Certains sites (IAPH…) bloquent les UA non-navigateur.
+  headers: { "User-Agent": "Mozilla/5.0 (compatible; career-radar/1.0)" },
 });
 
 /** Récupère les entrées réelles d'un flux RSS et les normalise. */

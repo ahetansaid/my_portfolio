@@ -29,6 +29,8 @@ const NAV: NavItem[] = [
 
   { href: "/admin/radar", label: "Career Radar", icon: "📡", group: "radar" },
   { href: "/admin/radar/tracker", label: "Candidatures", icon: "🎯", group: "radar" },
+  { href: "/admin/radar/sources", label: "Sources", icon: "☁", group: "radar" },
+  { href: "/admin/radar/settings", label: "Réglages radar", icon: "⚙", group: "radar" },
 
   { href: "/admin/messages", label: "Messages", icon: "✉", badgeKey: "messagesUnread", group: "inbox" },
   { href: "/admin/bookings", label: "Rendez-vous", icon: "📅", badgeKey: "bookingsPending", group: "inbox" },

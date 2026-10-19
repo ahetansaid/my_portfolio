@@ -37,10 +37,11 @@ export async function runIngest(opts: { limitPerSource?: number } = {}): Promise
   };
 
   for (const src of SOURCES) {
-    stats.sources++;
-
     // Enregistre/actualise la source (configuration réelle, pas de donnée fictive)
     const existingSrc = await prisma.opportunitySource.findFirst({ where: { name: src.name } });
+    if (existingSrc && !existingSrc.isActive) continue; // désactivée dans l'admin
+    stats.sources++;
+
     const source = existingSrc
       ? existingSrc
       : await prisma.opportunitySource.create({
